@@ -452,103 +452,90 @@ EMAIL_CSS = _VARS + """
 
 BOOK_CSS = _VARS + """
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
-
-  .book-wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
-
-  /* Header */
-  .book-header { margin-bottom: 36px; }
-  .book-eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-  .book-title { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1.1; text-transform: uppercase; }
-  .book-title span { color: var(--gold); }
-  .book-sub { font-size: 12px; color: var(--text2); margin-top: 8px; letter-spacing: 1px; }
-  .accent-bar { height: 3px; background: linear-gradient(90deg, var(--gold) 0%, var(--red) 60%, transparent 100%); margin: 20px 0 32px; }
-
-  /* Step labels */
-  .step-label { display: inline-block; font-size: 9px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-    padding: 4px 14px; margin-bottom: 16px; background: var(--gold); color: #111;
-    clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
-
-  /* Input bubbles */
-  .bubble-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .bubble-row.three { grid-template-columns: 1fr 1fr 1fr; }
-  .bubble { display: flex; flex-direction: column; gap: 6px; }
-  .bubble label { font-size: 9px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); }
-  .bubble input {
-    background: var(--bg2); border: 1px solid var(--bg3); color: var(--text);
-    padding: 10px 14px; font-size: 13px; outline: none; width: 100%;
-    clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-    transition: border-color 0.2s;
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    padding: 40px 16px;
   }
-  .bubble input:focus { border-color: var(--gold); }
 
-  /* Meeting type pills */
-  .meet-row { display: flex; gap: 12px; margin-bottom: 32px; }
-  .meet-pill { flex: 1; padding: 12px; border: 2px solid var(--bg3); background: var(--bg2);
-    cursor: pointer; text-align: center; font-size: 12px; font-weight: 900; letter-spacing: 1px;
-    text-transform: uppercase; color: var(--text2); transition: all 0.15s;
-    clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px)); }
+  .card {
+    width: 100%; max-width: 480px;
+    background: var(--bg2);
+    clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 20px 100%, 0 calc(100% - 20px));
+    padding: 36px 32px 40px;
+  }
+
+  .card-eyebrow {
+    font-size: 9px; font-weight: 900; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold); margin-bottom: 10px;
+  }
+  .card-title {
+    font-size: 22px; font-weight: 900; text-transform: uppercase;
+    color: var(--text); line-height: 1.1; margin-bottom: 6px;
+  }
+  .card-title span { color: var(--gold); }
+  .card-sub { font-size: 11px; color: var(--text2); margin-bottom: 24px; letter-spacing: 0.5px; }
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--gold) 0%, var(--red) 50%, transparent 100%);
+    margin-bottom: 24px;
+  }
+
+  .field-label {
+    font-size: 9px; font-weight: 900; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--text2); display: block; margin-bottom: 6px;
+  }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 14px; }
+  .field-row.single { grid-template-columns: 1fr; }
+  .field-row.three { grid-template-columns: 1fr 1fr 1fr; }
+
+  input[type=text], input[type=email], input[type=tel], select {
+    width: 100%; background: var(--bg); border: 1px solid var(--bg3);
+    color: var(--text); padding: 10px 12px; font-size: 13px; outline: none;
+    clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+    transition: border-color 0.15s; appearance: none; -webkit-appearance: none;
+    font-family: inherit;
+  }
+  input:focus, select:focus { border-color: var(--gold); }
+  select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5' stroke='%23ECAA27' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 12px center; cursor: pointer;
+  }
+  select option { background: var(--bg2); color: var(--text); }
+  select option:disabled { color: #444; }
+  select option.unavailable { color: #444; }
+
+  .meet-row { display: flex; gap: 10px; margin-bottom: 20px; }
+  .meet-pill {
+    flex: 1; padding: 10px 8px; border: 1px solid var(--bg3); background: var(--bg);
+    cursor: pointer; text-align: center; font-size: 11px; font-weight: 900;
+    letter-spacing: 1px; text-transform: uppercase; color: var(--text2);
+    clip-path: polygon(0 0, calc(100% - 7px) 0, 100% 7px, 100% 100%, 7px 100%, 0 calc(100% - 7px));
+    transition: all 0.15s; user-select: none;
+  }
   .meet-pill:hover { border-color: var(--gold); color: var(--gold); }
   .meet-pill.active { border-color: var(--gold); background: var(--gold); color: #111; }
-  .meet-pill .meet-icon { font-size: 18px; display: block; margin-bottom: 4px; }
 
-  /* Calendar */
-  .cal-wrap { margin-bottom: 28px; }
-  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
-  .cal-nav-btn { background: var(--bg2); border: 1px solid var(--bg3); color: var(--gold);
-    width: 32px; height: 32px; cursor: pointer; font-size: 16px; font-weight: 900;
-    clip-path: polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
-    transition: background 0.15s; }
-  .cal-nav-btn:hover { background: var(--bg3); }
-  .cal-month { font-size: 14px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: var(--text); }
-  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
-  .cal-dow { font-size: 9px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
-    color: var(--text2); text-align: center; padding: 6px 0; }
-  .cal-day { height: 40px; display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 700; cursor: pointer; position: relative;
-    clip-path: polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
-    transition: all 0.15s; }
-  .cal-day.empty { background: transparent; cursor: default; }
-  .cal-day.past { color: var(--text3); cursor: not-allowed; }
-  .cal-day.weekend { color: var(--text3); cursor: not-allowed; }
-  .cal-day.available { background: var(--bg2); color: var(--text); }
-  .cal-day.available:hover { background: var(--bg3); border: 1px solid var(--gold); color: var(--gold); }
-  .cal-day.selected { background: var(--gold) !important; color: #111 !important; }
+  .slot-row { margin-bottom: 20px; animation: fadeUp 0.2s ease; }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-  /* Slot picker */
-  .slot-section { margin-bottom: 28px; animation: fadeUp 0.25s ease; }
-  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .slot-date-label { font-size: 12px; color: var(--text2); margin-bottom: 10px; letter-spacing: 1px; }
-  .slot-date-label strong { color: var(--gold); }
-  .slot-select {
-    width: 100%; background: var(--bg2); border: 1px solid var(--gold); color: var(--text);
-    padding: 12px 16px; font-size: 13px; outline: none; cursor: pointer;
-    clip-path: polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
-    appearance: none; -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ECAA27' stroke-width='2' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat; background-position: right 16px center;
-  }
-  .slot-select option { background: var(--bg2); color: var(--text); }
-  .slot-select option:disabled { color: var(--text3); }
-
-  /* Submit */
   .submit-btn {
-    width: 100%; padding: 16px; background: var(--gold); color: #111;
-    font-size: 13px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
-    border: none; cursor: pointer; margin-top: 8px;
-    clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+    width: 100%; padding: 14px; background: var(--gold); color: #111;
+    font-size: 12px; font-weight: 900; letter-spacing: 2.5px; text-transform: uppercase;
+    border: none; cursor: pointer; margin-top: 6px;
+    clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
     transition: background 0.15s;
   }
-  .submit-btn:hover { background: var(--gold-light); }
+  .submit-btn:hover { background: #ffc84d; }
   .submit-btn:disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
 
-  /* Success */
-  .success-msg { display: none; text-align: center; padding: 40px 20px; }
-  .success-icon { font-size: 48px; color: var(--gold); margin-bottom: 16px; }
-  .success-msg h2 { font-size: 22px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; }
-  .success-msg p { color: var(--text2); font-size: 13px; line-height: 1.7; }
-
-  .hidden { display: none !important; }
+  .success-card {
+    display: none; text-align: center; padding: 20px 0;
+  }
+  .success-icon { font-size: 40px; color: var(--gold); margin-bottom: 14px; }
+  .success-card h2 { font-size: 18px; font-weight: 900; text-transform: uppercase; margin-bottom: 10px; }
+  .success-card p { color: var(--text2); font-size: 12px; line-height: 1.7; }
 """
 
 # ── SDAT badge data ────────────────────────────────────────────────────────────
@@ -1408,24 +1395,40 @@ def availability():
 
 @app.route('/book/<int:row_num>')
 def book(row_num):
+    import json as _json, hashlib
+
     agencies = load_agencies()
-    agency = agencies.get(row_num)
-    name = (agency.get('name') if agency else '') or 'Your Agency'
+    agency   = agencies.get(row_num)
+    name     = (agency.get('name') if agency else '') or 'Your Agency'
 
-    # Generate next 60 weekdays
-    days = _get_weekdays(60)
+    # Next 14 weekdays
+    days = _get_weekdays(14)
+
+    # Date options for the dropdown
+    date_options_html = '<option value="">-- Select a date --</option>'
+    month_names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    dow_names   = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    for d in days:
+        dow   = dow_names[d.weekday()]
+        mon   = month_names[d.month - 1]
+        label = f"{dow}, {mon} {d.day}"
+        date_options_html += f'<option value="{d.isoformat()}">{label}</option>'
+
+    # Build fake-busy slots per day — {{date_iso: [slot_indices]}}
     slot_labels = _slot_labels()
+    busy_map = {{}}
+    for d in days:
+        h = int(hashlib.md5(d.isoformat().encode()).hexdigest()[:8], 16)
+        busy = []
+        for i in range(len(slot_labels)):
+            h = (h * 1664525 + 1013904223) & 0xFFFFFFFF
+            if i >= 2 and i <= len(slot_labels) - 3 and (h % 100) < 45:
+                busy.append(i)
+        busy_map[d.isoformat()] = busy
 
-    # Build fake-busy map: {date_iso: [slot_indices]}
-    busy_map = _fake_busy_map(days)
-
-    # Build slot options JSON for JS
-    import json as _json
-    slots_json = _json.dumps({
-        sl_label: i for i, sl_label in enumerate(slot_labels)
-    })
-    busy_json = _json.dumps({k: list(v) for k, v in busy_map.items()})
-    available_days_json = _json.dumps([d.isoformat() for d in days])
+    slot_labels_json = _json.dumps(slot_labels)
+    busy_map_json    = _json.dumps(busy_map)
+    name_json        = _json.dumps(name)
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1436,231 +1439,146 @@ def book(row_num):
 <style>{BOOK_CSS}</style>
 </head>
 <body>
-<div class="book-wrap" id="mainWrap">
-  <div class="book-header">
-    <div class="book-eyebrow">Proles Home Healthcare Consultants</div>
-    <div class="book-title">Schedule a <span>15-Minute</span> Discovery Call</div>
-    <div class="book-sub">Re: {name} &nbsp;&bull;&nbsp; Select a time that works for you</div>
-  </div>
-  <div class="accent-bar"></div>
+<div class="card" id="bookCard">
+  <div class="card-eyebrow">Proles Home Healthcare Consultants</div>
+  <div class="card-title">Book a <span>15-Min</span> Call</div>
+  <div class="card-sub">Re: {name}</div>
+  <div class="divider"></div>
 
-  <!-- Step 1: Details -->
-  <div class="step-label">STEP 1 &mdash; YOUR DETAILS</div>
-  <div class="bubble-row three">
-    <div class="bubble">
-      <label>Full Name</label>
-      <input type="text" id="inp-name" placeholder="Jane Smith" required>
+  <div class="field-row three">
+    <div>
+      <label class="field-label">Name</label>
+      <input type="text" id="inp-name" placeholder="Jane Smith">
     </div>
-    <div class="bubble">
-      <label>Email</label>
-      <input type="email" id="inp-email" placeholder="jane@agency.com" required>
+    <div>
+      <label class="field-label">Email</label>
+      <input type="email" id="inp-email" placeholder="jane@agency.com">
     </div>
-    <div class="bubble">
-      <label>Phone</label>
+    <div>
+      <label class="field-label">Phone</label>
       <input type="tel" id="inp-phone" placeholder="(410) 555-0100">
     </div>
   </div>
 
-  <!-- Meeting type -->
-  <div class="step-label" style="margin-top:8px;">HOW YOU'D LIKE TO MEET</div>
-  <div class="meet-row">
-    <div class="meet-pill active" id="pill-meet" onclick="setMeet('Google Meet')">
-      <span class="meet-icon">&#127760;</span>Google Meet
-    </div>
-    <div class="meet-pill" id="pill-zoom" onclick="setMeet('Zoom')">
-      <span class="meet-icon">&#128249;</span>Zoom
+  <label class="field-label" style="margin-bottom:8px;">How You'd Like to Meet</label>
+  <div class="meet-row" style="margin-bottom:20px;">
+    <div class="meet-pill active" id="pill-meet" onclick="setMeet('Google Meet')">&#127760; Google Meet</div>
+    <div class="meet-pill"        id="pill-zoom" onclick="setMeet('Zoom')">&#128249; Zoom</div>
+  </div>
+
+  <div class="field-row single" style="margin-bottom:14px;">
+    <div>
+      <label class="field-label">Select a Date</label>
+      <select id="date-sel" onchange="onDateChange(this.value)">
+        {date_options_html}
+      </select>
     </div>
   </div>
 
-  <!-- Step 2: Calendar -->
-  <div class="step-label">STEP 2 &mdash; CHOOSE A DATE</div>
-  <div class="cal-wrap">
-    <div class="cal-nav">
-      <button class="cal-nav-btn" onclick="prevMonth()">&#8249;</button>
-      <div class="cal-month" id="calMonthLabel"></div>
-      <button class="cal-nav-btn" onclick="nextMonth()">&#8250;</button>
-    </div>
-    <div class="cal-grid" id="calGrid">
-      <div class="cal-dow">MON</div>
-      <div class="cal-dow">TUE</div>
-      <div class="cal-dow">WED</div>
-      <div class="cal-dow">THU</div>
-      <div class="cal-dow">FRI</div>
-      <div class="cal-dow">SAT</div>
-      <div class="cal-dow">SUN</div>
+  <div class="slot-row field-row single" id="slot-row" style="display:none;">
+    <div>
+      <label class="field-label">Select a Time</label>
+      <select id="time-sel" onchange="onTimeChange()">
+        <option value="">-- Select a time --</option>
+      </select>
     </div>
   </div>
 
-  <!-- Step 3: Slot picker (hidden until date selected) -->
-  <div class="slot-section hidden" id="slotSection">
-    <div class="step-label">STEP 3 &mdash; PICK A TIME</div>
-    <div class="slot-date-label" id="slotDateLabel">Available slots for <strong id="slotDateStr"></strong></div>
-    <select class="slot-select" id="slotSelect">
-      <option value="">-- Select a time --</option>
-    </select>
-  </div>
-
-  <!-- Submit -->
-  <button class="submit-btn" id="submitBtn" disabled onclick="submitBooking()">
-    CONFIRM BOOKING
+  <button class="submit-btn" id="submit-btn" disabled onclick="submitBooking()">
+    Confirm Booking
   </button>
 
-  <div class="success-msg hidden" id="successMsg">
+  <div class="success-card" id="success-card">
     <div class="success-icon">&#10003;</div>
-    <h2>Booking Confirmed!</h2>
-    <p id="successDetail"></p>
-    <p style="margin-top:12px;">Check your email for confirmation and meeting details.</p>
+    <h2>You're Booked!</h2>
+    <p id="success-detail"></p>
+    <p style="margin-top:10px;">We'll send confirmation to your email.</p>
   </div>
 </div>
 
 <script>
-const SLOT_LABELS = {_json.dumps(slot_labels)};
-const BUSY_MAP    = {busy_json};
-const AVAIL_DAYS  = new Set({available_days_json});
-const TODAY       = new Date(); TODAY.setHours(0,0,0,0);
+const SLOT_LABELS  = {slot_labels_json};
+const BUSY_MAP     = {busy_map_json};
+let selectedMeet   = 'Google Meet';
+let selectedDate   = null;
+let selectedTime   = null;
 
-let selectedMeet = 'Google Meet';
-let selectedDate = null;
-let calYear, calMonth;
-
-(function() {{
-  const now = new Date();
-  calYear  = now.getFullYear();
-  calMonth = now.getMonth();
-  renderCal();
-}})();
-
-function setMeet(type) {{
-  selectedMeet = type;
-  document.getElementById('pill-meet').classList.toggle('active', type === 'Google Meet');
-  document.getElementById('pill-zoom').classList.toggle('active', type === 'Zoom');
+function setMeet(t) {{
+  selectedMeet = t;
+  document.getElementById('pill-meet').classList.toggle('active', t === 'Google Meet');
+  document.getElementById('pill-zoom').classList.toggle('active', t === 'Zoom');
 }}
 
-function prevMonth() {{
-  calMonth--;
-  if (calMonth < 0) {{ calMonth = 11; calYear--; }}
-  renderCal();
-}}
-function nextMonth() {{
-  calMonth++;
-  if (calMonth > 11) {{ calMonth = 0; calYear++; }}
-  renderCal();
-}}
-
-function pad(n) {{ return String(n).padStart(2, '0'); }}
-
-function renderCal() {{
-  const MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
-                  'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
-  document.getElementById('calMonthLabel').textContent = MONTHS[calMonth] + ' ' + calYear;
-
-  const grid = document.getElementById('calGrid');
-  while (grid.children.length > 7) grid.removeChild(grid.lastChild);
-
-  const firstDay = new Date(calYear, calMonth, 1);
-  let startDow = firstDay.getDay();
-  startDow = (startDow === 0) ? 6 : startDow - 1;
-
-  for (let i = 0; i < startDow; i++) {{
-    const empty = document.createElement('div');
-    empty.className = 'cal-day empty';
-    grid.appendChild(empty);
-  }}
-
-  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
-  for (let d = 1; d <= daysInMonth; d++) {{
-    const cell = document.createElement('div');
-    cell.textContent = d;
-    const dateIso = calYear + '-' + pad(calMonth + 1) + '-' + pad(d);
-    const dateObj = new Date(calYear, calMonth, d);
-    const dow = dateObj.getDay();
-
-    if (dateObj < TODAY || dow === 0 || dow === 6) {{
-      cell.className = 'cal-day ' + (dow === 0 || dow === 6 ? 'weekend' : 'past');
-    }} else if (AVAIL_DAYS.has(dateIso)) {{
-      cell.className = 'cal-day available' + (dateIso === selectedDate ? ' selected' : '');
-      cell.onclick = () => selectDate(dateIso, dateObj);
-    }} else {{
-      cell.className = 'cal-day past';
-    }}
-    grid.appendChild(cell);
-  }}
-}}
-
-function selectDate(iso, dateObj) {{
-  selectedDate = iso;
-  renderCal();
-  buildSlots(iso, dateObj);
-}}
-
-function buildSlots(iso, dateObj) {{
-  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const MONTHS_LONG = ['January','February','March','April','May','June',
-    'July','August','September','October','November','December'];
-  const label = DAYS[dateObj.getDay()] + ', ' + MONTHS_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
-  document.getElementById('slotDateStr').textContent = label;
-
-  const sel = document.getElementById('slotSelect');
+function onDateChange(iso) {{
+  selectedDate = iso || null;
+  selectedTime = null;
+  const row  = document.getElementById('slot-row');
+  const sel  = document.getElementById('time-sel');
+  if (!iso) {{ row.style.display = 'none'; checkSubmit(); return; }}
+  const busy = new Set(BUSY_MAP[iso] || []);
   sel.innerHTML = '<option value="">-- Select a time --</option>';
-  const busyIdxs = new Set(BUSY_MAP[iso] || []);
-  SLOT_LABELS.forEach((lbl, i) => {{
+  SLOT_LABELS.forEach(function(lbl, i) {{
     const opt = document.createElement('option');
     opt.value = lbl;
-    if (busyIdxs.has(i)) {{
+    if (busy.has(i)) {{
       opt.disabled = true;
       opt.textContent = lbl + '  (Unavailable)';
-      opt.style.color = '#444';
+      opt.className = 'unavailable';
     }} else {{
       opt.textContent = lbl;
     }}
     sel.appendChild(opt);
   }});
-
-  sel.onchange = () => {{
-    document.getElementById('submitBtn').disabled = !sel.value;
-  }};
-
-  document.getElementById('slotSection').classList.remove('hidden');
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('slotSection').scrollIntoView({{behavior:'smooth', block:'nearest'}});
+  row.style.display = '';
+  checkSubmit();
 }}
 
+function onTimeChange() {{
+  selectedTime = document.getElementById('time-sel').value || null;
+  checkSubmit();
+}}
+
+function checkSubmit() {{
+  const ok = !!(selectedDate && selectedTime &&
+    document.getElementById('inp-name').value.trim() &&
+    document.getElementById('inp-email').value.trim());
+  document.getElementById('submit-btn').disabled = !ok;
+}}
+
+document.addEventListener('input', function(e) {{
+  if (['inp-name','inp-email'].includes(e.target.id)) checkSubmit();
+}});
+
 async function submitBooking() {{
-  const name     = document.getElementById('inp-name').value.trim();
-  const email    = document.getElementById('inp-email').value.trim();
-  const phone    = document.getElementById('inp-phone').value.trim();
-  const slot     = document.getElementById('slotSelect').value;
-
-  if (!name || !email || !selectedDate || !slot) {{
-    alert('Please fill in your name, email, pick a date, and select a time.');
-    return;
-  }}
-
-  document.getElementById('submitBtn').disabled = true;
-  document.getElementById('submitBtn').textContent = 'CONFIRMING...';
-
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Confirming...';
+  const payload = {{
+    agency_num: {row_num},
+    agency_name: {name_json},
+    contact_name:  document.getElementById('inp-name').value.trim(),
+    contact_email: document.getElementById('inp-email').value.trim(),
+    contact_phone: document.getElementById('inp-phone').value.trim(),
+    meeting_type:  selectedMeet,
+    date: selectedDate,
+    time: selectedTime
+  }};
   try {{
-    const res = await fetch('/book-confirm', {{
-      method: 'POST',
-      headers: {{'Content-Type': 'application/json'}},
-      body: JSON.stringify({{
-        agency_num: {row_num},
-        agency_name: '{name}',
-        contact_name: name,
-        contact_email: email,
-        contact_phone: phone,
-        meeting_type: selectedMeet,
-        date: selectedDate,
-        time: slot
-      }})
+    await fetch('/book-confirm', {{
+      method:'POST', headers:{{'Content-Type':'application/json'}},
+      body: JSON.stringify(payload)
     }});
   }} catch(e) {{}}
-
-  document.getElementById('mainWrap').classList.add('hidden');
-  const s = document.getElementById('successMsg');
-  s.classList.remove('hidden');
-  document.getElementById('successDetail').textContent =
-    name + ' · ' + selectedDate + ' at ' + slot + ' · ' + selectedMeet;
+  document.getElementById('bookCard').querySelector('.card-eyebrow').style.display = 'none';
+  document.getElementById('bookCard').querySelector('.card-title').style.display   = 'none';
+  document.getElementById('bookCard').querySelector('.card-sub').style.display     = 'none';
+  document.getElementById('bookCard').querySelector('.divider').style.display      = 'none';
+  document.querySelectorAll('.field-row, .meet-row, .slot-row, #submit-btn, .field-label').forEach(function(el) {{
+    el.style.display = 'none';
+  }});
+  const s = document.getElementById('success-card');
+  s.style.display = 'block';
+  document.getElementById('success-detail').textContent =
+    payload.contact_name + ' · ' + payload.date + ' at ' + payload.time + ' · ' + payload.meeting_type;
 }}
 </script>
 </body>
