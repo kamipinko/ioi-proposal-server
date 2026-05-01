@@ -403,11 +403,14 @@ def build_email_html(agency, n):
 <body style="font-family:Arial,sans-serif;background:#f5f0e8;margin:0;padding:20px;">
 <div style="max-width:600px;margin:0 auto;background:#fff;border:2px solid #ECAA27;">
 
-  <div style="background:#111111;padding:20px 28px;border-bottom:3px solid #ECAA27;">
-    <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:2px;text-transform:uppercase;">
-      PROLES HOME HEALTHCARE CONSULTANTS
+  <div style="background:#111111;padding:20px 28px;border-bottom:3px solid #ECAA27;display:flex;justify-content:space-between;align-items:center;">
+    <div>
+      <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:2px;text-transform:uppercase;">
+        PROLES HOME HEALTHCARE CONSULTANTS
+      </div>
+      <div style="font-size:22px;font-weight:900;color:#f5f0e8;margin-top:6px;">{name}</div>
     </div>
-    <div style="font-size:22px;font-weight:900;color:#f5f0e8;margin-top:6px;">{name}</div>
+    <img src="https://ioi-proposal-server-production.up.railway.app/static/logo.png" alt="Proles" style="height:56px;width:auto;background:#f5f0e8;padding:5px 8px;">
   </div>
 
   <div style="padding:28px 32px;color:#1a1a1a;font-size:14px;line-height:1.8;">
@@ -517,8 +520,7 @@ def build_proposal(agency, n):
       <div class="header-sub">For {name}</div>
     </div>
     <div class="header-right">
-      <div class="brand-name">Proles Home Healthcare Consultants</div>
-      <div class="brand-tagline">Project Management &amp; Digital Solutions</div>
+      <img src="/static/logo.png" alt="Proles Home Healthcare Consultants" style="height:64px;width:auto;background:#f5f0e8;padding:6px 10px;display:block;">
     </div>
   </div>
 
