@@ -22,7 +22,7 @@ COMPANY = 'Proles Home Healthcare Consultants'
 COMPANY_URL = 'www.prolesconsulting.com'
 GMAIL_USER = os.environ.get('GMAIL_USER', 'amthuku@gmail.com')
 RAILWAY_URL = 'https://ioi-proposal-server-production.up.railway.app'
-EXAMPLE_DISPLAY = 'inspiredoptionscare.com'
+EXAMPLE_DISPLAY = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 EXAMPLE_HREF = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 
 GMAIL_SCOPES = [
