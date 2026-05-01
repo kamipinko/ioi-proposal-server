@@ -802,34 +802,14 @@ def generate_draft(row_num):
     name  = agency.get('name') or 'Agency'
     email = agency.get('email') or ''
 
-    # 1. Generate PDF via Playwright
+    # 1. Generate PDF via WeasyPrint
     pdf_bytes = None
     try:
-        import subprocess, sys
-        script = f"""
-import asyncio
-from playwright.async_api import async_playwright
-
-async def run():
-    async with async_playwright() as p:
-        browser = await p.chromium.launch()
-        page = await browser.new_page()
-        await page.goto('http://127.0.0.1:{PORT}/proposal/{row_num}', wait_until='networkidle')
-        pdf = await page.pdf(format='Letter', print_background=True,
-                              margin={{'top':'0.5in','bottom':'0.5in','left':'0.6in','right':'0.6in'}})
-        await browser.close()
-        return pdf
-
-data = asyncio.run(run())
-import sys
-sys.stdout.buffer.write(data)
-"""
-        result = subprocess.run(
-            [sys.executable, '-c', script],
-            capture_output=True, timeout=60
+        from weasyprint import HTML, CSS
+        proposal_html = build_proposal(agency, row_num)
+        pdf_bytes = HTML(string=proposal_html, base_url=None).write_pdf(
+            stylesheets=[CSS(string='@page { size: Letter; margin: 0.5in 0.6in; }')]
         )
-        if result.returncode == 0 and result.stdout:
-            pdf_bytes = result.stdout
     except Exception as e:
         print(f'[pdf] {e}')
 
