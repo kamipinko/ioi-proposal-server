@@ -410,7 +410,7 @@ def build_email_html(agency, n):
       </div>
       <div style="font-size:22px;font-weight:900;color:#f5f0e8;margin-top:6px;">{name}</div>
     </div>
-    <img src="https://ioi-proposal-server-production.up.railway.app/static/logo.png" alt="Proles" style="height:56px;width:auto;background:#f5f0e8;padding:5px 8px;">
+    <img src="https://ioi-proposal-server-production.up.railway.app/static/logo.png" alt="Proles" style="height:56px;width:auto;filter:brightness(0) invert(1);">
   </div>
 
   <div style="padding:28px 32px;color:#1a1a1a;font-size:14px;line-height:1.8;">
@@ -520,7 +520,7 @@ def build_proposal(agency, n):
       <div class="header-sub">For {name}</div>
     </div>
     <div class="header-right">
-      <img src="/static/logo.png" alt="Proles Home Healthcare Consultants" style="height:64px;width:auto;background:#f5f0e8;padding:6px 10px;display:block;">
+      <img src="/static/logo.png" alt="Proles Home Healthcare Consultants" style="height:64px;width:auto;display:block;filter:brightness(0) invert(1);">
     </div>
   </div>
 
