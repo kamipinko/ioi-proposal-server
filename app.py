@@ -303,6 +303,16 @@ EMAIL_CSS = """
 """
 
 
+SDAT_BADGE = {
+    'ACTIVE':       ('#22c55e', '#fff'),
+    'REVIVED':      ('#14b8a6', '#fff'),
+    'INCORPORATED': ('#3b82f6', '#fff'),
+    'FORFEITED':    ('#ef4444', '#fff'),
+    'NOT FOUND':    ('#6b7280', '#fff'),
+}
+SDAT_TARGETABLE = {'ACTIVE', 'REVIVED', 'INCORPORATED'}
+
+
 @app.route('/')
 def index():
     agencies = load_agencies()
@@ -314,21 +324,41 @@ def index():
         city = a.get('city') or '—'
         phone = a.get('phone') or '—'
         email = a.get('email') or '—'
-        rows += f"""<tr>
+        sdat = (a.get('sdat_status') or '').strip().upper()
+
+        badge_html = ''
+        if sdat and sdat in SDAT_BADGE:
+            bg, fg = SDAT_BADGE[sdat]
+            badge_html = (
+                f'<span style="background:{bg};color:{fg};font-size:10px;'
+                f'font-weight:bold;padding:2px 7px;border-radius:10px;'
+                f'margin-left:7px;letter-spacing:0.5px;">{sdat}</span>'
+            )
+
+        row_style = ' style="opacity:0.5;"' if sdat == 'FORFEITED' else ''
+
+        if sdat in SDAT_TARGETABLE:
+            action_html = (
+                f'<a href="/proposal/{i}" class="btn btn-teal">Open Proposal</a>'
+                f'<a href="/email/{i}" class="btn btn-amber">Email</a>'
+            )
+        elif sdat == 'FORFEITED':
+            action_html = '<span style="color:#9ca3af;font-size:12px;">Forfeited</span>'
+        else:
+            action_html = '<a href="/email/{i}" class="btn btn-amber">Email</a>'
+
+        rows += f"""<tr{row_style}>
           <td>{i}</td>
-          <td><a href="/proposal/{i}" style="color:#1A7A6A;font-weight:bold;">{name}</a></td>
+          <td><a href="/proposal/{i}" style="color:#1A7A6A;font-weight:bold;">{name}</a>{badge_html}</td>
           <td>{atype}</td><td>{city}</td><td>{phone}</td><td>{email}</td>
-          <td>
-            <a href="/proposal/{i}" class="btn btn-teal">Proposal</a>
-            <a href="/email/{i}" class="btn btn-amber">Email</a>
-          </td>
+          <td>{action_html}</td>
         </tr>"""
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Follow-Up 50 — PROLES Outreach</title>
+<title>IOI Outreach &mdash; Follow-Up 50 (SDAT Verified)</title>
 <style>
   * {{ box-sizing: border-box; margin: 0; padding: 0; }}
   body {{ font-family: Arial, sans-serif; background: #0F1E2E; color: #fff; padding: 30px 20px; }}
@@ -344,7 +374,7 @@ def index():
 </style>
 </head>
 <body>
-<h1>Follow-Up 50</h1>
+<h1>IOI Outreach &mdash; Follow-Up 50 (SDAT Verified)</h1>
 <div class="sub">PROLES Consulting &mdash; Maryland Agency Outreach &mdash; April 2026</div>
 <table>
   <thead><tr><th>#</th><th>Agency Name</th><th>Type</th><th>City</th><th>Phone</th><th>Email</th><th>Actions</th></tr></thead>
