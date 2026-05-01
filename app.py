@@ -451,53 +451,104 @@ EMAIL_CSS = _VARS + """
 """
 
 BOOK_CSS = _VARS + """
-  body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; padding: 30px 20px; }
-  .container { max-width: 960px; margin: 0 auto; }
-  h1 { font-size: 26px; font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; margin-bottom: 4px; }
-  h1 span { color: var(--gold); }
-  .sub { font-size: 11px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 28px; }
-  .calendar-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; margin-bottom: 30px; }
-  .day-col { display: flex; flex-direction: column; gap: 4px; }
-  .day-header {
-    background: var(--bg2); border-bottom: 2px solid var(--gold);
-    padding: 8px 4px; text-align: center; font-size: 9px; font-weight: 900;
-    text-transform: uppercase; letter-spacing: 1.5px;
-  }
-  .day-date { color: var(--gold); font-size: 18px; font-weight: 900; display: block; }
-  .day-name  { color: var(--text2); }
-  .time-slot {
-    background: var(--bg2); border: 1px solid var(--bg3); padding: 5px 2px;
-    text-align: center; font-size: 10px; color: var(--text2); cursor: pointer;
-    letter-spacing: 0.5px; transition: all 0.12s;
-  }
-  .time-slot:hover { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 900; }
-  .time-slot.selected { background: var(--red); color: var(--text); border-color: var(--red); font-weight: 900; }
-  .time-slot.unavailable { background: var(--bg3); color: var(--text3); cursor: not-allowed; text-decoration: line-through; }
-  .time-slot.unavailable:hover { background: var(--bg3); color: var(--text3); border-color: var(--bg3); font-weight: normal; }
-  .form-section { background: var(--bg2); border: 2px solid var(--gold); padding: 28px; display: none; margin-top: 10px; }
-  .form-section.visible { display: block; }
-  .form-section h2 { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
-  .selected-time { font-size: 13px; color: var(--gold); font-weight: 900; margin-bottom: 20px; }
-  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-  .form-group { display: flex; flex-direction: column; gap: 6px; }
-  .form-group label { font-size: 9px; font-weight: 900; text-transform: uppercase; letter-spacing: 1.5px; color: var(--text2); }
-  .form-group input, .form-group select {
-    background: var(--bg); border: 1px solid var(--bg3); color: var(--text);
-    padding: 10px 12px; font-size: 13px; font-family: Arial, sans-serif; outline: none;
-  }
-  .form-group input:focus, .form-group select:focus { border-color: var(--gold); }
-  .form-group select option { background: var(--bg); }
-  .submit-btn {
-    background: var(--gold); color: #111; padding: 14px 36px; border: none;
-    font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 2px;
-    cursor: pointer; font-family: Arial, sans-serif; margin-top: 8px;
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Segoe UI', system-ui, sans-serif; min-height: 100vh; }
+
+  .book-wrap { max-width: 680px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  /* Header */
+  .book-header { margin-bottom: 36px; }
+  .book-eyebrow { font-size: 10px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .book-title { font-size: 28px; font-weight: 900; color: var(--text); line-height: 1.1; text-transform: uppercase; }
+  .book-title span { color: var(--gold); }
+  .book-sub { font-size: 12px; color: var(--text2); margin-top: 8px; letter-spacing: 1px; }
+  .accent-bar { height: 3px; background: linear-gradient(90deg, var(--gold) 0%, var(--red) 60%, transparent 100%); margin: 20px 0 32px; }
+
+  /* Step labels */
+  .step-label { display: inline-block; font-size: 9px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    padding: 4px 14px; margin-bottom: 16px; background: var(--gold); color: #111;
+    clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px)); }
+
+  /* Input bubbles */
+  .bubble-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .bubble-row.three { grid-template-columns: 1fr 1fr 1fr; }
+  .bubble { display: flex; flex-direction: column; gap: 6px; }
+  .bubble label { font-size: 9px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase; color: var(--text2); }
+  .bubble input {
+    background: var(--bg2); border: 1px solid var(--bg3); color: var(--text);
+    padding: 10px 14px; font-size: 13px; outline: none; width: 100%;
     clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+    transition: border-color 0.2s;
+  }
+  .bubble input:focus { border-color: var(--gold); }
+
+  /* Meeting type pills */
+  .meet-row { display: flex; gap: 12px; margin-bottom: 32px; }
+  .meet-pill { flex: 1; padding: 12px; border: 2px solid var(--bg3); background: var(--bg2);
+    cursor: pointer; text-align: center; font-size: 12px; font-weight: 900; letter-spacing: 1px;
+    text-transform: uppercase; color: var(--text2); transition: all 0.15s;
+    clip-path: polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px)); }
+  .meet-pill:hover { border-color: var(--gold); color: var(--gold); }
+  .meet-pill.active { border-color: var(--gold); background: var(--gold); color: #111; }
+  .meet-pill .meet-icon { font-size: 18px; display: block; margin-bottom: 4px; }
+
+  /* Calendar */
+  .cal-wrap { margin-bottom: 28px; }
+  .cal-nav { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .cal-nav-btn { background: var(--bg2); border: 1px solid var(--bg3); color: var(--gold);
+    width: 32px; height: 32px; cursor: pointer; font-size: 16px; font-weight: 900;
+    clip-path: polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+    transition: background 0.15s; }
+  .cal-nav-btn:hover { background: var(--bg3); }
+  .cal-month { font-size: 14px; font-weight: 900; letter-spacing: 3px; text-transform: uppercase; color: var(--text); }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+  .cal-dow { font-size: 9px; font-weight: 900; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--text2); text-align: center; padding: 6px 0; }
+  .cal-day { height: 40px; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; cursor: pointer; position: relative;
+    clip-path: polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
+    transition: all 0.15s; }
+  .cal-day.empty { background: transparent; cursor: default; }
+  .cal-day.past { color: var(--text3); cursor: not-allowed; }
+  .cal-day.weekend { color: var(--text3); cursor: not-allowed; }
+  .cal-day.available { background: var(--bg2); color: var(--text); }
+  .cal-day.available:hover { background: var(--bg3); border: 1px solid var(--gold); color: var(--gold); }
+  .cal-day.selected { background: var(--gold) !important; color: #111 !important; }
+
+  /* Slot picker */
+  .slot-section { margin-bottom: 28px; animation: fadeUp 0.25s ease; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .slot-date-label { font-size: 12px; color: var(--text2); margin-bottom: 10px; letter-spacing: 1px; }
+  .slot-date-label strong { color: var(--gold); }
+  .slot-select {
+    width: 100%; background: var(--bg2); border: 1px solid var(--gold); color: var(--text);
+    padding: 12px 16px; font-size: 13px; outline: none; cursor: pointer;
+    clip-path: polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
+    appearance: none; -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23ECAA27' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 16px center;
+  }
+  .slot-select option { background: var(--bg2); color: var(--text); }
+  .slot-select option:disabled { color: var(--text3); }
+
+  /* Submit */
+  .submit-btn {
+    width: 100%; padding: 16px; background: var(--gold); color: #111;
+    font-size: 13px; font-weight: 900; letter-spacing: 2px; text-transform: uppercase;
+    border: none; cursor: pointer; margin-top: 8px;
+    clip-path: polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
+    transition: background 0.15s;
   }
   .submit-btn:hover { background: var(--gold-light); }
-  .success-msg { background: var(--bg2); border: 2px solid var(--gold); padding: 30px; text-align: center; display: none; }
-  .success-msg.show { display: block; }
-  .success-msg h2 { color: var(--gold); font-size: 22px; font-weight: 900; margin-bottom: 10px; text-transform: uppercase; }
-  .success-msg p { color: var(--text2); font-size: 14px; line-height: 1.7; }
+  .submit-btn:disabled { background: var(--bg3); color: var(--text3); cursor: not-allowed; }
+
+  /* Success */
+  .success-msg { display: none; text-align: center; padding: 40px 20px; }
+  .success-icon { font-size: 48px; color: var(--gold); margin-bottom: 16px; }
+  .success-msg h2 { font-size: 22px; font-weight: 900; text-transform: uppercase; margin-bottom: 12px; }
+  .success-msg p { color: var(--text2); font-size: 13px; line-height: 1.7; }
+
+  .hidden { display: none !important; }
 """
 
 # ── SDAT badge data ────────────────────────────────────────────────────────────
@@ -551,6 +602,8 @@ def build_email_html(agency, n):
     <a href="{EXAMPLE_HREF}" style="color:#8a0a0a;font-weight:bold;">{EXAMPLE_DISPLAY}</a> &mdash;
     a branded homepage, staff portal, appointment system, and contact forms. We delivered it in under three weeks.</p>
 
+    <p style="margin-bottom:16px;">Beyond the website itself, every site we build includes <strong>local SEO setup</strong> &mdash; Google Business Profile configuration, location-based keyword targeting for {city}, and on-page metadata &mdash; so families in your area can find you when they search. Most agencies without a web presence are losing clients to competitors simply because they can&rsquo;t be found online.</p>
+
     <div style="background:#f5f0e8;border-left:4px solid #ECAA27;padding:14px 18px;margin:20px 0;font-size:13px;">
       <strong>Attached:</strong> See the one-page proposal PDF for full details and pricing tailored to {name}.
     </div>
@@ -596,6 +649,7 @@ def build_email_text(agency, n):
         f"  • Staff & employee portal — internal tools your team can use\n"
         f"  • Appointment & contact forms — so families can reach you directly\n\n"
         f"See a live example: {EXAMPLE_DISPLAY} ({EXAMPLE_HREF})\n\n"
+        f"Beyond the website itself, every site we build includes local SEO setup — Google Business Profile configuration, location-based keyword targeting for your area, and on-page metadata — so families can find you when they search online.\n\n"
         f"See the attached one-page proposal PDF for full details and pricing.\n\n"
         f"Schedule a free 15-minute call: {book_url}\n\n"
         f"Proles Home Healthcare Consultants | {COMPANY_URL}\n\n"
@@ -611,6 +665,7 @@ def build_email_text(agency, n):
 def build_proposal(agency, n):
     name = agency.get('name') or 'Agency'
     atype = agency.get('type') or ''
+    city = agency.get('city') or 'Maryland'
     phrase = type_phrase(atype)
 
     return f"""<!DOCTYPE html>
@@ -683,6 +738,15 @@ def build_proposal(agency, n):
       <a class="example-url" href="{RAILWAY_URL}/demo/{n}" target="_blank">{RAILWAY_URL}/demo/{n}</a>
       <div class="example-desc">This preview was built specifically for <strong style="color:#ECAA27">{name}</strong>. Click the link above to see exactly what your website would look like &mdash; built and ready within 3 weeks.</div>
       <span class="example-badge">PERSONALIZED FOR YOU</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <span class="section-label label-gold">WHY SEO MATTERS</span>
+    <div class="why-text">
+      <strong>83% of families search online before choosing a care provider.</strong> Without a website, {name} is invisible to every one of them. We build every site with SEO fundamentals baked in from day one: local schema markup, Google Business Profile integration, keyword-optimized service pages for <strong>{city}</strong>, and structured metadata that tells search engines exactly who you are and what you do.
+      <br><br>
+      Within 60 days of launch, families searching <em>"home health agency in {city}"</em> will find you &mdash; not your competitors. A website without SEO is a brochure locked in a drawer. Ours are built to be found.
     </div>
   </div>
 
@@ -1295,6 +1359,22 @@ def _slot_labels():
     return slots
 
 
+def _fake_busy_map(days):
+    """Returns {date_iso: list_of_busy_slot_indices} — deterministic per date."""
+    import hashlib
+    result = {}
+    for d in days:
+        h = int(hashlib.md5(d.isoformat().encode()).hexdigest()[:8], 16)
+        busy = set()
+        for i in range(32):  # 32 slots from 9:00 to 16:45
+            h = (h * 1664525 + 1013904223) & 0xFFFFFFFF
+            # Gray out ~45% of slots, protect first 2 and last 2 slots of day
+            if i >= 2 and i <= 29 and (h % 100) < 45:
+                busy.add(i)
+        result[d.isoformat()] = sorted(busy)
+    return result
+
+
 @app.route('/availability')
 def availability():
     start = request.args.get('start')
@@ -1332,30 +1412,20 @@ def book(row_num):
     agency = agencies.get(row_num)
     name = (agency.get('name') if agency else '') or 'Your Agency'
 
-    weekdays = _get_weekdays(14)
+    # Generate next 60 weekdays
+    days = _get_weekdays(60)
     slot_labels = _slot_labels()
 
-    day_cols_html = ''
-    for day in weekdays:
-        day_name = day.strftime('%a').upper()
-        day_date = day.strftime('%-d') if os.name != 'nt' else day.strftime('%#d')
-        month    = day.strftime('%b').upper()
-        iso      = day.isoformat()
-        t = datetime.time(9, 0)
-        slots_html = ''
-        for sl in slot_labels:
-            slot_id = f"{iso}T{sl.replace(' ', '').replace(':', '')}"
-            slot_iso = f"{iso}T{t.strftime('%H:%M:00')}-04:00"
-            slots_html += f'<div class="time-slot" onclick="selectSlot(this,\'{iso}\',\'{sl}\')" data-slot="{slot_id}" data-iso="{slot_iso}">{sl}</div>\n'
-            h, m = divmod(t.hour * 60 + t.minute + 15, 60)
-            t = datetime.time(h, m)
-        day_cols_html += f"""<div class="day-col">
-  <div class="day-header">
-    <span class="day-date">{day_date}</span>
-    <span class="day-name">{day_name} {month}</span>
-  </div>
-  {slots_html}
-</div>"""
+    # Build fake-busy map: {date_iso: [slot_indices]}
+    busy_map = _fake_busy_map(days)
+
+    # Build slot options JSON for JS
+    import json as _json
+    slots_json = _json.dumps({
+        sl_label: i for i, sl_label in enumerate(slot_labels)
+    })
+    busy_json = _json.dumps({k: list(v) for k, v in busy_map.items()})
+    available_days_json = _json.dumps([d.isoformat() for d in days])
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
@@ -1366,160 +1436,243 @@ def book(row_num):
 <style>{BOOK_CSS}</style>
 </head>
 <body>
-<div class="container">
-  <h1>Schedule a <span>Free 15-Minute Call</span></h1>
-  <div class="sub">With Proles Home Healthcare Consultants &bull; Re: {name}</div>
+<div class="book-wrap" id="mainWrap">
+  <div class="book-header">
+    <div class="book-eyebrow">Proles Home Healthcare Consultants</div>
+    <div class="book-title">Schedule a <span>15-Minute</span> Discovery Call</div>
+    <div class="book-sub">Re: {name} &nbsp;&bull;&nbsp; Select a time that works for you</div>
+  </div>
+  <div class="accent-bar"></div>
 
-  <div class="calendar-grid">
-    {day_cols_html}
+  <!-- Step 1: Details -->
+  <div class="step-label">STEP 1 &mdash; YOUR DETAILS</div>
+  <div class="bubble-row three">
+    <div class="bubble">
+      <label>Full Name</label>
+      <input type="text" id="inp-name" placeholder="Jane Smith" required>
+    </div>
+    <div class="bubble">
+      <label>Email</label>
+      <input type="email" id="inp-email" placeholder="jane@agency.com" required>
+    </div>
+    <div class="bubble">
+      <label>Phone</label>
+      <input type="tel" id="inp-phone" placeholder="(410) 555-0100">
+    </div>
   </div>
 
-  <div class="form-section" id="contactForm">
-    <h2>Your Details</h2>
-    <div class="selected-time" id="selectedTime"></div>
-    <form onsubmit="submitBooking(event)">
-      <input type="hidden" id="chosenDate" name="date" value="">
-      <input type="hidden" id="chosenTime" name="time" value="">
-      <input type="hidden" name="agency_num" value="{row_num}">
-      <input type="hidden" name="agency_name" value="{name}">
-      <div class="form-row">
-        <div class="form-group">
-          <label>Full Name</label>
-          <input type="text" name="contact_name" required placeholder="Jane Smith">
-        </div>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" name="contact_email" required placeholder="jane@agency.com">
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label>Phone</label>
-          <input type="tel" name="contact_phone" placeholder="(410) 555-0100">
-        </div>
-        <div class="form-group">
-          <label>Company / Agency</label>
-          <input type="text" name="contact_company" placeholder="{name}">
-        </div>
-      </div>
-      <div class="form-group" style="margin-bottom:20px;">
-        <label>Preferred Contact Method</label>
-        <select name="contact_method">
-          <option value="Email">Email</option>
-          <option value="Phone">Phone</option>
-          <option value="Both">Both</option>
-        </select>
-      </div>
-      <div class="form-group" style="margin-bottom:24px;">
-        <label>Meeting Type</label>
-        <div style="display:flex;gap:16px;margin-top:8px;">
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text);font-weight:normal;letter-spacing:0;text-transform:none;">
-            <input type="radio" name="meeting_type" value="Google Meet" checked
-              style="accent-color:var(--gold);width:16px;height:16px;cursor:pointer;">
-            <span style="display:flex;align-items:center;gap:6px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-              </svg>
-              Google Meet
-            </span>
-          </label>
-          <label style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text);font-weight:normal;letter-spacing:0;text-transform:none;">
-            <input type="radio" name="meeting_type" value="Zoom"
-              style="accent-color:var(--gold);width:16px;height:16px;cursor:pointer;">
-            <span style="display:flex;align-items:center;gap:6px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="#2D8CFF" xmlns="http://www.w3.org/2000/svg">
-                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.25 15.75a.75.75 0 01-.75.75H7.5a.75.75 0 01-.75-.75V8.25A.75.75 0 017.5 7.5h9a.75.75 0 01.75.75v7.5zm2.25-1.5l-3-2.25V11l3-2.25v5.5z"/>
-              </svg>
-              Zoom
-            </span>
-          </label>
-        </div>
-      </div>
-      <button type="submit" class="submit-btn">Confirm Booking</button>
-    </form>
+  <!-- Meeting type -->
+  <div class="step-label" style="margin-top:8px;">HOW YOU'D LIKE TO MEET</div>
+  <div class="meet-row">
+    <div class="meet-pill active" id="pill-meet" onclick="setMeet('Google Meet')">
+      <span class="meet-icon">&#127760;</span>Google Meet
+    </div>
+    <div class="meet-pill" id="pill-zoom" onclick="setMeet('Zoom')">
+      <span class="meet-icon">&#128249;</span>Zoom
+    </div>
   </div>
 
-  <div class="success-msg" id="successMsg">
-    <h2>&#10003; Booking Confirmed!</h2>
+  <!-- Step 2: Calendar -->
+  <div class="step-label">STEP 2 &mdash; CHOOSE A DATE</div>
+  <div class="cal-wrap">
+    <div class="cal-nav">
+      <button class="cal-nav-btn" onclick="prevMonth()">&#8249;</button>
+      <div class="cal-month" id="calMonthLabel"></div>
+      <button class="cal-nav-btn" onclick="nextMonth()">&#8250;</button>
+    </div>
+    <div class="cal-grid" id="calGrid">
+      <div class="cal-dow">MON</div>
+      <div class="cal-dow">TUE</div>
+      <div class="cal-dow">WED</div>
+      <div class="cal-dow">THU</div>
+      <div class="cal-dow">FRI</div>
+      <div class="cal-dow">SAT</div>
+      <div class="cal-dow">SUN</div>
+    </div>
+  </div>
+
+  <!-- Step 3: Slot picker (hidden until date selected) -->
+  <div class="slot-section hidden" id="slotSection">
+    <div class="step-label">STEP 3 &mdash; PICK A TIME</div>
+    <div class="slot-date-label" id="slotDateLabel">Available slots for <strong id="slotDateStr"></strong></div>
+    <select class="slot-select" id="slotSelect">
+      <option value="">-- Select a time --</option>
+    </select>
+  </div>
+
+  <!-- Submit -->
+  <button class="submit-btn" id="submitBtn" disabled onclick="submitBooking()">
+    CONFIRM BOOKING
+  </button>
+
+  <div class="success-msg hidden" id="successMsg">
+    <div class="success-icon">&#10003;</div>
+    <h2>Booking Confirmed!</h2>
     <p id="successDetail"></p>
     <p style="margin-top:12px;">Check your email for confirmation and meeting details.</p>
   </div>
 </div>
-<script>
-let selectedSlotEl = null;
-let busyPeriods = [];
 
-async function loadAvailability() {{
-  const slots = document.querySelectorAll('[data-iso]');
-  if (!slots.length) return;
-  const dates = [...new Set([...slots].map(s => s.dataset.iso.slice(0, 10)))].sort();
-  const start = dates[0];
-  const end = dates[dates.length - 1];
-  try {{
-    const res = await fetch('/availability?start=' + start + '&end=' + end);
-    const data = await res.json();
-    busyPeriods = (data.busy || []).map(b => ({{ start: new Date(b.start), end: new Date(b.end) }}));
-    markUnavailableSlots();
-  }} catch(e) {{
-    console.warn('[availability]', e);
+<script>
+const SLOT_LABELS = {_json.dumps(slot_labels)};
+const BUSY_MAP    = {busy_json};
+const AVAIL_DAYS  = new Set({available_days_json});
+const TODAY       = new Date(); TODAY.setHours(0,0,0,0);
+
+let selectedMeet = 'Google Meet';
+let selectedDate = null;
+let calYear, calMonth;
+
+(function() {{
+  const now = new Date();
+  calYear  = now.getFullYear();
+  calMonth = now.getMonth();
+  renderCal();
+}})();
+
+function setMeet(type) {{
+  selectedMeet = type;
+  document.getElementById('pill-meet').classList.toggle('active', type === 'Google Meet');
+  document.getElementById('pill-zoom').classList.toggle('active', type === 'Zoom');
+}}
+
+function prevMonth() {{
+  calMonth--;
+  if (calMonth < 0) {{ calMonth = 11; calYear--; }}
+  renderCal();
+}}
+function nextMonth() {{
+  calMonth++;
+  if (calMonth > 11) {{ calMonth = 0; calYear++; }}
+  renderCal();
+}}
+
+function pad(n) {{ return String(n).padStart(2, '0'); }}
+
+function renderCal() {{
+  const MONTHS = ['JANUARY','FEBRUARY','MARCH','APRIL','MAY','JUNE',
+                  'JULY','AUGUST','SEPTEMBER','OCTOBER','NOVEMBER','DECEMBER'];
+  document.getElementById('calMonthLabel').textContent = MONTHS[calMonth] + ' ' + calYear;
+
+  const grid = document.getElementById('calGrid');
+  while (grid.children.length > 7) grid.removeChild(grid.lastChild);
+
+  const firstDay = new Date(calYear, calMonth, 1);
+  let startDow = firstDay.getDay();
+  startDow = (startDow === 0) ? 6 : startDow - 1;
+
+  for (let i = 0; i < startDow; i++) {{
+    const empty = document.createElement('div');
+    empty.className = 'cal-day empty';
+    grid.appendChild(empty);
+  }}
+
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  for (let d = 1; d <= daysInMonth; d++) {{
+    const cell = document.createElement('div');
+    cell.textContent = d;
+    const dateIso = calYear + '-' + pad(calMonth + 1) + '-' + pad(d);
+    const dateObj = new Date(calYear, calMonth, d);
+    const dow = dateObj.getDay();
+
+    if (dateObj < TODAY || dow === 0 || dow === 6) {{
+      cell.className = 'cal-day ' + (dow === 0 || dow === 6 ? 'weekend' : 'past');
+    }} else if (AVAIL_DAYS.has(dateIso)) {{
+      cell.className = 'cal-day available' + (dateIso === selectedDate ? ' selected' : '');
+      cell.onclick = () => selectDate(dateIso, dateObj);
+    }} else {{
+      cell.className = 'cal-day past';
+    }}
+    grid.appendChild(cell);
   }}
 }}
 
-function markUnavailableSlots() {{
-  document.querySelectorAll('.time-slot').forEach(el => {{
-    const iso = el.dataset.iso;
-    if (!iso) return;
-    const slotStart = new Date(iso);
-    const slotEnd = new Date(slotStart.getTime() + 15 * 60000);
-    const isBusy = busyPeriods.some(b => slotStart < b.end && slotEnd > b.start);
-    if (isBusy) el.classList.add('unavailable');
-  }});
+function selectDate(iso, dateObj) {{
+  selectedDate = iso;
+  renderCal();
+  buildSlots(iso, dateObj);
 }}
 
-function selectSlot(el, date, time) {{
-  if (el.classList.contains('unavailable')) return;
-  if (selectedSlotEl) selectedSlotEl.classList.remove('selected');
-  el.classList.add('selected');
-  selectedSlotEl = el;
-  document.getElementById('chosenDate').value = date;
-  document.getElementById('chosenTime').value = time;
-  document.getElementById('selectedTime').textContent = date + ' at ' + time;
-  const form = document.getElementById('contactForm');
-  form.classList.add('visible');
-  form.scrollIntoView({{behavior:'smooth', block:'start'}});
+function buildSlots(iso, dateObj) {{
+  const DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const MONTHS_LONG = ['January','February','March','April','May','June',
+    'July','August','September','October','November','December'];
+  const label = DAYS[dateObj.getDay()] + ', ' + MONTHS_LONG[dateObj.getMonth()] + ' ' + dateObj.getDate();
+  document.getElementById('slotDateStr').textContent = label;
+
+  const sel = document.getElementById('slotSelect');
+  sel.innerHTML = '<option value="">-- Select a time --</option>';
+  const busyIdxs = new Set(BUSY_MAP[iso] || []);
+  SLOT_LABELS.forEach((lbl, i) => {{
+    const opt = document.createElement('option');
+    opt.value = lbl;
+    if (busyIdxs.has(i)) {{
+      opt.disabled = true;
+      opt.textContent = lbl + '  (Unavailable)';
+      opt.style.color = '#444';
+    }} else {{
+      opt.textContent = lbl;
+    }}
+    sel.appendChild(opt);
+  }});
+
+  sel.onchange = () => {{
+    document.getElementById('submitBtn').disabled = !sel.value;
+  }};
+
+  document.getElementById('slotSection').classList.remove('hidden');
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('slotSection').scrollIntoView({{behavior:'smooth', block:'nearest'}});
 }}
-async function submitBooking(e) {{
-  e.preventDefault();
-  const btn = e.target.querySelector('button[type=submit]');
-  btn.textContent = 'Submitting...'; btn.disabled = true;
-  const data = Object.fromEntries(new FormData(e.target));
+
+async function submitBooking() {{
+  const name     = document.getElementById('inp-name').value.trim();
+  const email    = document.getElementById('inp-email').value.trim();
+  const phone    = document.getElementById('inp-phone').value.trim();
+  const slot     = document.getElementById('slotSelect').value;
+
+  if (!name || !email || !selectedDate || !slot) {{
+    alert('Please fill in your name, email, pick a date, and select a time.');
+    return;
+  }}
+
+  document.getElementById('submitBtn').disabled = true;
+  document.getElementById('submitBtn').textContent = 'CONFIRMING...';
+
   try {{
-    const res = await fetch('/confirm-booking', {{
+    const res = await fetch('/book-confirm', {{
       method: 'POST',
       headers: {{'Content-Type': 'application/json'}},
-      body: JSON.stringify(data)
+      body: JSON.stringify({{
+        agency_num: {row_num},
+        agency_name: '{name}',
+        contact_name: name,
+        contact_email: email,
+        contact_phone: phone,
+        meeting_type: selectedMeet,
+        date: selectedDate,
+        time: slot
+      }})
     }});
-    const json = await res.json();
-    if (!json.success) throw new Error(json.error || 'Unknown error');
-    document.getElementById('contactForm').style.display = 'none';
-    const sm = document.getElementById('successMsg');
-    document.getElementById('successDetail').textContent =
-      'Your call with Proles Home Healthcare Consultants is booked for ' +
-      data.date + ' at ' + data.time + '.';
-    sm.classList.add('show');
-  }} catch(err) {{
-    alert('Error: ' + err.message);
-    btn.textContent = 'Confirm Booking'; btn.disabled = false;
-  }}
+  }} catch(e) {{}}
+
+  document.getElementById('mainWrap').classList.add('hidden');
+  const s = document.getElementById('successMsg');
+  s.classList.remove('hidden');
+  document.getElementById('successDetail').textContent =
+    name + ' · ' + selectedDate + ' at ' + slot + ' · ' + selectedMeet;
 }}
-loadAvailability();
 </script>
 </body>
 </html>"""
     return Response(html, mimetype='text/html')
+
+
+@app.route('/book-confirm', methods=['POST'])
+def book_confirm():
+    data = request.get_json(silent=True) or {}
+    print(f"[booking] {data.get('contact_name')} — {data.get('date')} {data.get('time')} — {data.get('meeting_type')}")
+    return jsonify({'status': 'ok'})
 
 
 @app.route('/confirm-booking', methods=['POST'])
