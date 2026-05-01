@@ -22,7 +22,7 @@ COMPANY = 'Proles Home Healthcare Consultants'
 COMPANY_URL = 'www.prolesconsulting.com'
 GMAIL_USER = os.environ.get('GMAIL_USER', 'amthuku@gmail.com')
 RAILWAY_URL = 'https://ioi-proposal-server-production.up.railway.app'
-EXAMPLE_DISPLAY = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
+EXAMPLE_DISPLAY = 'inspiredoptionscare.com'
 EXAMPLE_HREF = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 
 GMAIL_SCOPES = [
@@ -352,6 +352,8 @@ BOOK_CSS = _VARS + """
   }
   .time-slot:hover { background: var(--gold); color: #111; border-color: var(--gold); font-weight: 900; }
   .time-slot.selected { background: var(--red); color: var(--text); border-color: var(--red); font-weight: 900; }
+  .time-slot.unavailable { background: var(--bg3); color: var(--text3); cursor: not-allowed; text-decoration: line-through; }
+  .time-slot.unavailable:hover { background: var(--bg3); color: var(--text3); border-color: var(--bg3); font-weight: normal; }
   .form-section { background: var(--bg2); border: 2px solid var(--gold); padding: 28px; display: none; margin-top: 10px; }
   .form-section.visible { display: block; }
   .form-section h2 { font-size: 18px; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
@@ -612,6 +614,27 @@ function showToast(msg) {{
 </html>"""
 
 
+_CSS_VAR_MAP = [
+    ('var(--gold-light)', '#ffc84d'),
+    ('var(--red-light)',  '#e05252'),
+    ('var(--text3)',      '#444444'),
+    ('var(--text2)',      '#888888'),
+    ('var(--text)',       '#f5f0e8'),
+    ('var(--bg3)',        '#2a2a2a'),
+    ('var(--bg2)',        '#1a1a1a'),
+    ('var(--bg)',         '#111111'),
+    ('var(--gold)',       '#ECAA27'),
+    ('var(--red)',        '#8a0a0a'),
+]
+
+
+def build_proposal_for_pdf(agency, n):
+    html = build_proposal(agency, n)
+    for var, val in _CSS_VAR_MAP:
+        html = html.replace(var, val)
+    return html
+
+
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
 @app.route('/')
@@ -808,12 +831,17 @@ def generate_draft(row_num):
     pdf_bytes = None
     try:
         from weasyprint import HTML, CSS
-        proposal_html = build_proposal(agency, row_num)
+        print(f'[pdf] building HTML for {name}...')
+        proposal_html = build_proposal_for_pdf(agency, row_num)
+        print(f'[pdf] HTML len={len(proposal_html)}, calling WeasyPrint...')
         pdf_bytes = HTML(string=proposal_html, base_url=None).write_pdf(
             stylesheets=[CSS(string='@page { size: Letter; margin: 0.5in 0.6in; }')]
         )
+        print(f'[pdf] done, size={len(pdf_bytes)} bytes')
     except Exception as e:
-        print(f'[pdf] {e}')
+        import traceback
+        print(f'[pdf] error: {e}')
+        print(traceback.format_exc())
 
     # 2. Build Gmail draft
     gmail = get_gmail_service()
@@ -877,6 +905,37 @@ def _slot_labels():
     return slots
 
 
+@app.route('/availability')
+def availability():
+    start = request.args.get('start')
+    end = request.args.get('end')
+    if not start or not end:
+        return jsonify({'busy': []})
+    creds = _build_creds()
+    if not creds:
+        return jsonify({'busy': []})
+    try:
+        from googleapiclient.discovery import build as gcal_build
+        from dateutil import tz as dateutil_tz
+        et = dateutil_tz.gettz('America/New_York')
+        start_dt = datetime.datetime.strptime(start, '%Y-%m-%d').replace(
+            hour=0, minute=0, second=0, tzinfo=et)
+        end_dt = datetime.datetime.strptime(end, '%Y-%m-%d').replace(
+            hour=23, minute=59, second=59, tzinfo=et)
+        cal = gcal_build('calendar', 'v3', credentials=creds)
+        result = cal.freebusy().query(body={
+            'timeMin': start_dt.isoformat(),
+            'timeMax': end_dt.isoformat(),
+            'timeZone': 'America/New_York',
+            'items': [{'id': 'primary'}],
+        }).execute()
+        busy = result.get('calendars', {}).get('primary', {}).get('busy', [])
+        return jsonify({'busy': busy})
+    except Exception as e:
+        print(f'[availability] {e}')
+        return jsonify({'busy': []})
+
+
 @app.route('/book/<int:row_num>')
 def book(row_num):
     agencies = load_agencies()
@@ -892,10 +951,14 @@ def book(row_num):
         day_date = day.strftime('%-d') if os.name != 'nt' else day.strftime('%#d')
         month    = day.strftime('%b').upper()
         iso      = day.isoformat()
+        t = datetime.time(9, 0)
         slots_html = ''
         for sl in slot_labels:
             slot_id = f"{iso}T{sl.replace(' ', '').replace(':', '')}"
-            slots_html += f'<div class="time-slot" onclick="selectSlot(this,\'{iso}\',\'{sl}\')" data-slot="{slot_id}">{sl}</div>\n'
+            slot_iso = f"{iso}T{t.strftime('%H:%M:00')}-04:00"
+            slots_html += f'<div class="time-slot" onclick="selectSlot(this,\'{iso}\',\'{sl}\')" data-slot="{slot_id}" data-iso="{slot_iso}">{sl}</div>\n'
+            h, m = divmod(t.hour * 60 + t.minute + 15, 60)
+            t = datetime.time(h, m)
         day_cols_html += f"""<div class="day-col">
   <div class="day-header">
     <span class="day-date">{day_date}</span>
@@ -997,7 +1060,37 @@ def book(row_num):
 </div>
 <script>
 let selectedSlotEl = null;
+let busyPeriods = [];
+
+async function loadAvailability() {{
+  const slots = document.querySelectorAll('[data-iso]');
+  if (!slots.length) return;
+  const dates = [...new Set([...slots].map(s => s.dataset.iso.slice(0, 10)))].sort();
+  const start = dates[0];
+  const end = dates[dates.length - 1];
+  try {{
+    const res = await fetch('/availability?start=' + start + '&end=' + end);
+    const data = await res.json();
+    busyPeriods = (data.busy || []).map(b => ({{ start: new Date(b.start), end: new Date(b.end) }}));
+    markUnavailableSlots();
+  }} catch(e) {{
+    console.warn('[availability]', e);
+  }}
+}}
+
+function markUnavailableSlots() {{
+  document.querySelectorAll('.time-slot').forEach(el => {{
+    const iso = el.dataset.iso;
+    if (!iso) return;
+    const slotStart = new Date(iso);
+    const slotEnd = new Date(slotStart.getTime() + 15 * 60000);
+    const isBusy = busyPeriods.some(b => slotStart < b.end && slotEnd > b.start);
+    if (isBusy) el.classList.add('unavailable');
+  }});
+}}
+
 function selectSlot(el, date, time) {{
+  if (el.classList.contains('unavailable')) return;
   if (selectedSlotEl) selectedSlotEl.classList.remove('selected');
   el.classList.add('selected');
   selectedSlotEl = el;
@@ -1032,6 +1125,7 @@ async function submitBooking(e) {{
     btn.textContent = 'Confirm Booking'; btn.disabled = false;
   }}
 }}
+loadAvailability();
 </script>
 </body>
 </html>"""
