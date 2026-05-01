@@ -260,30 +260,150 @@ PROPOSAL_CSS = _VARS + """
 """
 
 INDEX_CSS = _VARS + """
-  body { font-family: Arial, sans-serif; background: var(--bg); color: var(--text); padding: 30px 20px; min-height: 100vh; }
-  .page-header {
-    border-bottom: 3px solid var(--gold); padding-bottom: 16px; margin-bottom: 24px;
-    display: flex; justify-content: space-between; align-items: flex-end;
+  @keyframes slideInLeft  { from { opacity:0; transform: translateX(-40px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes slideInRight { from { opacity:0; transform: translateX(40px);  } to { opacity:1; transform: translateX(0); } }
+  @keyframes fadeUp       { from { opacity:0; transform: translateY(20px);  } to { opacity:1; transform: translateY(0); } }
+  @keyframes bannerWipe   { from { clip-path: polygon(0 0,0 0,0 100%,0 100%); } to { clip-path: polygon(0 0,100% 0,100% 100%,0 100%); } }
+  @keyframes scanline     { 0%,100% { opacity:0.03; } 50% { opacity:0.07; } }
+  @keyframes rowIn        { from { opacity:0; transform: translateX(-12px); } to { opacity:1; transform: translateX(0); } }
+  @keyframes pulse-gold   { 0%,100% { box-shadow:0 0 0 0 rgba(236,170,39,0); } 50% { box-shadow:0 0 0 6px rgba(236,170,39,0.15); } }
+
+  body {
+    font-family: Arial, sans-serif; background: var(--bg); color: var(--text);
+    padding: 0; min-height: 100vh; overflow-x: hidden;
   }
-  h1 { font-size: 26px; color: var(--text); font-weight: 900; text-transform: uppercase; letter-spacing: -0.5px; }
-  h1 span { color: var(--gold); }
-  .sub { font-size: 11px; color: var(--text2); margin-top: 4px; letter-spacing: 2px; text-transform: uppercase; }
-  .brand-badge { font-size: 11px; font-weight: 900; color: var(--gold); text-transform: uppercase; letter-spacing: 1.5px; text-align: right; }
+
+  /* ── Top Banner ── */
+  .top-banner {
+    background: var(--bg2); border-bottom: 3px solid var(--gold);
+    padding: 0 32px; display: flex; justify-content: space-between;
+    align-items: stretch; position: relative; overflow: hidden;
+    animation: slideInLeft 0.5s cubic-bezier(.16,1,.3,1) both;
+  }
+  .top-banner::before {
+    content: ''; position: absolute; inset: 0;
+    background: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255,255,255,0.015) 2px, rgba(255,255,255,0.015) 4px);
+    animation: scanline 3s ease-in-out infinite; pointer-events: none;
+  }
+  .banner-left {
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 20px 0; gap: 4px;
+  }
+  .banner-eyebrow {
+    font-size: 9px; font-weight: 900; color: var(--gold);
+    letter-spacing: 3px; text-transform: uppercase;
+  }
+  .banner-title {
+    font-size: 32px; font-weight: 900; color: var(--text);
+    text-transform: uppercase; letter-spacing: -1px; line-height: 1;
+  }
+  .banner-title span { color: var(--gold); }
+  .banner-sub {
+    font-size: 10px; color: var(--text2); letter-spacing: 2px;
+    text-transform: uppercase; margin-top: 2px;
+  }
+  .banner-right {
+    display: flex; align-items: center; gap: 0;
+    border-left: 1px solid var(--bg3); padding-left: 32px; margin-left: 32px;
+  }
+  .banner-logo { height: 72px; width: auto; }
+  .banner-stat {
+    display: flex; flex-direction: column; align-items: center;
+    padding: 0 20px; border-right: 1px solid var(--bg3);
+  }
+  .banner-stat:last-of-type { border-right: none; }
+  .stat-num { font-size: 28px; font-weight: 900; color: var(--gold); line-height: 1; }
+  .stat-label { font-size: 8px; color: var(--text2); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 3px; }
+
+  /* ── Diagonal accent bar ── */
+  .accent-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--red) 0%, var(--red) 30%, var(--gold) 30%, var(--gold) 60%, var(--bg3) 60%);
+    animation: bannerWipe 0.6s 0.3s cubic-bezier(.16,1,.3,1) both;
+  }
+
+  /* ── Content ── */
+  .content { padding: 28px 32px; animation: fadeUp 0.5s 0.2s cubic-bezier(.16,1,.3,1) both; }
+
+  /* ── Table ── */
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th {
     background: var(--bg2); color: var(--gold); padding: 10px 12px; text-align: left;
     font-size: 9px; letter-spacing: 2px; text-transform: uppercase; border-bottom: 2px solid var(--gold);
+    position: sticky; top: 0; z-index: 10;
   }
-  td { padding: 9px 12px; border-bottom: 1px solid var(--bg3); color: var(--text); vertical-align: middle; }
-  tr:hover td { background: var(--bg2); }
+  tbody tr {
+    animation: rowIn 0.3s both;
+    transition: background 0.15s ease;
+  }
+  tbody tr:nth-child(n) { animation-delay: calc(n * 0.02s); }
+  td {
+    padding: 9px 12px; border-bottom: 1px solid var(--bg3);
+    color: var(--text); vertical-align: middle;
+    transition: background 0.15s ease, padding-left 0.15s ease;
+  }
+  tbody tr:hover td { background: var(--bg2); padding-left: 16px; }
+  tbody tr:hover td:first-child { border-left: 3px solid var(--gold); padding-left: 13px; }
+
+  /* ── Buttons ── */
   .btn {
     display: inline-block; padding: 5px 14px; font-size: 10px; font-weight: 900;
     text-decoration: none; margin-right: 4px; text-transform: uppercase; letter-spacing: 1px;
     clip-path: polygon(0 0,calc(100% - 5px) 0,100% 5px,100% 100%,5px 100%,0 calc(100% - 5px));
     cursor: pointer; border: none; font-family: Arial, sans-serif;
+    transition: transform 0.1s ease, filter 0.1s ease;
   }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.15); }
+  .btn:active { transform: translateY(1px); filter: brightness(0.9); }
   .btn-gold { background: var(--gold); color: #111; }
   .btn-red  { background: var(--red);  color: var(--text); }
+
+  /* ── P5 Modal ── */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(0,0,0,0.85); z-index: 1000;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; animation: fadeUp 0.2s cubic-bezier(.16,1,.3,1) both; }
+  .modal-box {
+    background: var(--bg2); border: 2px solid var(--gold); width: 480px; max-width: 95vw;
+    clip-path: polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+    animation: slideInRight 0.25s cubic-bezier(.16,1,.3,1) both;
+    overflow: hidden;
+  }
+  .modal-header {
+    background: var(--bg); border-bottom: 2px solid var(--gold); padding: 16px 22px;
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .modal-agency { font-size: 16px; font-weight: 900; color: var(--text); text-transform: uppercase; }
+  .modal-type   { font-size: 9px; color: var(--text2); letter-spacing: 2px; text-transform: uppercase; margin-top: 3px; }
+  .modal-close  {
+    background: none; border: none; color: var(--text2); font-size: 20px;
+    cursor: pointer; line-height: 1; padding: 0; transition: color 0.15s;
+  }
+  .modal-close:hover { color: var(--gold); }
+  .modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 10px; }
+  .modal-stat  { font-size: 12px; color: var(--text2); }
+  .modal-stat strong { color: var(--text); }
+  .modal-sdat  {
+    display: inline-block; font-size: 9px; font-weight: 900; padding: 3px 10px;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px;
+  }
+  .modal-actions { display: flex; gap: 8px; padding: 16px 22px; border-top: 1px solid var(--bg3); flex-wrap: wrap; }
+  .modal-btn {
+    flex: 1; padding: 12px; font-size: 10px; font-weight: 900; text-align: center;
+    text-decoration: none; text-transform: uppercase; letter-spacing: 1.5px; cursor: pointer;
+    border: none; font-family: Arial, sans-serif;
+    clip-path: polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));
+    transition: filter 0.15s ease, transform 0.1s ease;
+  }
+  .modal-btn:hover { filter: brightness(1.2); transform: translateY(-1px); }
+  .modal-btn-gold { background: var(--gold); color: #111; }
+  .modal-btn-red  { background: var(--red);  color: var(--text); }
+  .modal-btn-dim  { background: var(--bg3);  color: var(--text2); }
+  .btn-demo { background: transparent; border: 2px solid #ECAA27; color: #ECAA27; }
+  .btn-demo:hover { background: #ECAA27; color: #111; }
 """
 
 EMAIL_CSS = _VARS + """
@@ -558,6 +678,15 @@ def build_proposal(agency, n):
   </div>
 
   <div class="section">
+    <span class="section-label label-gold">YOUR DEMO SITE</span>
+    <div class="example-box">
+      <a class="example-url" href="{RAILWAY_URL}/demo/{n}" target="_blank">{RAILWAY_URL}/demo/{n}</a>
+      <div class="example-desc">This preview was built specifically for <strong style="color:#ECAA27">{name}</strong>. Click the link above to see exactly what your website would look like &mdash; built and ready within 3 weeks.</div>
+      <span class="example-badge">PERSONALIZED FOR YOU</span>
+    </div>
+  </div>
+
+  <div class="section">
     <div class="section-label label-red">Why Proles HHC</div>
     <div class="why-text">
       <strong>Maryland-based. Healthcare-focused.</strong> We understand DDA and home health compliance, OHCQ licensing requirements, and what Maryland families actually need to trust a provider enough to call.
@@ -635,6 +764,176 @@ def build_proposal_for_pdf(agency, n):
     return html
 
 
+def demo_services(agency_type):
+    t = (agency_type or '').lower()
+    if 'home health' in t:
+        return [
+            ('Skilled Nursing', 'Registered nurses providing medical care in the comfort of home.'),
+            ('Physical Therapy', 'Rehabilitation to restore strength, mobility, and independence.'),
+            ('Home Health Aide', 'Assistance with daily activities, hygiene, and personal care.'),
+            ('Medication Management', 'Ensuring medications are taken correctly and on schedule.'),
+        ]
+    if 'dda' in t or 'residential' in t or 'rsa' in t:
+        return [
+            ('Community Support', 'Helping individuals integrate and thrive in their communities.'),
+            ('Residential Services', 'Safe, supportive living environments tailored to each person.'),
+            ('Skills Training', 'Building independence through life skills and vocational support.'),
+            ('Care Planning', 'Individualized care plans developed with clients and families.'),
+        ]
+    return [
+        ('Personal Care', 'Compassionate assistance with daily living activities.'),
+        ('Companion Services', 'Friendly support and social engagement for seniors and adults.'),
+        ('Care Coordination', 'Connecting clients to the right services and community resources.'),
+        ('Family Support', 'Guidance and respite resources for family caregivers.'),
+    ]
+
+
+def build_demo(agency, n):
+    name   = agency.get('name')  or 'Agency'
+    atype  = agency.get('type')  or ''
+    city   = agency.get('city')  or 'Maryland'
+    phone  = agency.get('phone') or ''
+    phrase = type_phrase(atype)
+    services = demo_services(atype)
+
+    t = atype.lower()
+    if 'home health' in t:
+        svc_type = 'home health'
+    elif 'residential' in t or 'rsa' in t or 'dda' in t:
+        svc_type = 'residential care'
+    elif 'day care' in t or 'adult day' in t:
+        svc_type = 'adult day care'
+    else:
+        svc_type = 'care'
+
+    cards_html = ''
+    for idx, (svc_name, svc_desc) in enumerate(services):
+        num_str = f'0{idx + 1}'
+        cards_html += (
+            f'<div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:28px;">'
+            f'<div style="font-size:11px;font-weight:900;color:#ECAA27;letter-spacing:2px;margin-bottom:12px;">{num_str}</div>'
+            f'<div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:10px;">{svc_name}</div>'
+            f'<div style="font-size:14px;color:#888888;line-height:1.6;">{svc_desc}</div>'
+            f'</div>'
+        )
+
+    phone_html = ''
+    if phone and phone != '—':
+        phone_html = f'<div style="font-size:36px;font-weight:900;color:#ECAA27;margin:16px 0;">{phone}</div>'
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>{name} &mdash; Professional Care Services</title>
+<style>
+* {{ box-sizing: border-box; margin: 0; padding: 0; }}
+body {{ font-family: Arial, Helvetica, sans-serif; background: #111111; color: #f5f0e8; }}
+a {{ text-decoration: none; }}
+</style>
+</head>
+<body>
+
+<div style="background:#ECAA27;color:#111111;font-size:10px;font-weight:900;text-transform:uppercase;
+     letter-spacing:2px;text-align:center;padding:10px 20px;position:fixed;top:0;left:0;right:0;
+     z-index:9999;height:38px;display:flex;align-items:center;justify-content:center;">
+  <span>DEMO PREVIEW &mdash; Built for {name} by Proles HHC &mdash; Not a live website</span>
+  <a href="{RAILWAY_URL}/proposal/{n}" target="_blank"
+     style="position:absolute;right:20px;color:#8a0a0a;font-size:9px;font-weight:900;letter-spacing:1px;">
+    VIEW PROPOSAL &rarr;
+  </a>
+</div>
+
+<nav style="background:#111111;border-bottom:2px solid #ECAA27;position:sticky;top:38px;z-index:999;
+     height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 60px;">
+  <div style="font-size:18px;font-weight:900;color:#ECAA27;">{name}</div>
+  <div style="display:flex;gap:32px;">
+    <a href="#services" style="color:#f5f0e8;font-size:14px;font-weight:600;"
+       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Services</a>
+    <a href="#about" style="color:#f5f0e8;font-size:14px;font-weight:600;"
+       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">About</a>
+    <a href="#contact" style="color:#f5f0e8;font-size:14px;font-weight:600;"
+       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Contact</a>
+  </div>
+</nav>
+
+<section style="min-height:calc(100vh - 98px);background:#111111;padding:80px 60px;
+     display:flex;align-items:center;clip-path:polygon(0 0,100% 0,88% 100%,0 100%);
+     padding-right:calc(12% + 60px);">
+  <div style="max-width:700px;">
+    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+         letter-spacing:3px;margin-bottom:20px;">{city}, Maryland &middot; {phrase}</div>
+    <h1 style="font-size:56px;font-weight:900;color:#f5f0e8;line-height:1.1;
+         margin-bottom:20px;letter-spacing:-1px;">{name}</h1>
+    <p style="font-size:18px;color:#888888;line-height:1.6;margin-bottom:40px;">
+      Providing professional {svc_type} services to families across {city} and surrounding Maryland communities.
+    </p>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="#contact" style="background:#ECAA27;color:#111111;padding:16px 32px;
+         font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
+         clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));">
+        Request Services &rarr;
+      </a>
+      <a href="#services" style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;
+         padding:16px 32px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">
+        Learn More
+      </a>
+    </div>
+  </div>
+</section>
+
+<section id="services" style="background:#1a1a1a;padding:80px 60px;">
+  <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+       letter-spacing:3px;margin-bottom:16px;">WHAT WE OFFER</div>
+  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:48px;">Our Services</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">{cards_html}</div>
+</section>
+
+<section id="about" style="background:#111111;padding:80px 60px;">
+  <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+       letter-spacing:3px;margin-bottom:16px;">WHY CHOOSE US</div>
+  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:48px;">Our Commitment</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;">
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
+      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9733;</div>
+      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Licensed &amp; Certified</div>
+      <div style="font-size:14px;color:#888888;line-height:1.6;">Maryland OHCQ licensed and fully compliant. Your family&rsquo;s safety and trust is our highest priority.</div>
+    </div>
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
+      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9670;</div>
+      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Maryland Based</div>
+      <div style="font-size:14px;color:#888888;line-height:1.6;">Rooted in the local community. We understand the unique needs of Maryland families and the resources available to them.</div>
+    </div>
+    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
+      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9829;</div>
+      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Personalized Care</div>
+      <div style="font-size:14px;color:#888888;line-height:1.6;">Every client receives an individualized care plan tailored to their specific needs, goals, and family situation.</div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="background:#1a1a1a;padding:80px 60px;border-left:4px solid #ECAA27;">
+  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:16px;">Ready to Get Started?</h2>
+  <p style="font-size:16px;color:#888888;margin-bottom:24px;">{city}, Maryland</p>
+  {phone_html}
+  <a href="#" style="display:inline-block;background:#ECAA27;color:#111111;padding:16px 40px;
+     font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-top:16px;
+     clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));">
+    Contact Us Today
+  </a>
+</section>
+
+<footer style="background:#0a0a0a;padding:30px 60px;display:flex;
+     justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
+  <span style="font-size:12px;color:#444444;">&copy; 2026 {name} &middot; Licensed by Maryland OHCQ</span>
+  <span style="font-size:12px;color:#444444;">Demo created by Proles HHC &middot; prolesconsulting.com</span>
+</footer>
+
+</body>
+</html>"""
+
+
 # ── Routes ─────────────────────────────────────────────────────────────────────
 
 @app.route('/')
@@ -671,34 +970,125 @@ def index():
         else:
             action_html = f'<a href="/email/{i}" class="btn btn-red">Email</a>'
 
-        rows += f"""<tr{row_style}>
+        rows += f"""<tr{row_style} onclick="openModal({i},'{name.replace("'","\\'")}','{atype}','{city}','{phone}','{email}','{sdat}')" style="cursor:pointer;">
           <td>{i}</td>
-          <td><a href="/proposal/{i}" style="color:var(--gold);font-weight:bold;">{name}</a>{badge_html}</td>
+          <td><a href="/proposal/{i}" style="color:var(--gold);font-weight:bold;" onclick="event.stopPropagation();">{name}</a>{badge_html}</td>
           <td>{atype}</td><td>{city}</td><td>{phone}</td><td>{email}</td>
-          <td>{action_html}</td>
+          <td onclick="event.stopPropagation();">{action_html}</td>
         </tr>"""
 
     html = f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>IOI Outreach &mdash; Follow-Up 50 (SDAT Verified)</title>
+<title>Digitalization Outreach &mdash; Follow-Up 50</title>
 <style>{INDEX_CSS}</style>
 </head>
 <body>
-<div class="page-header">
-  <div>
-    <h1>IOI Outreach &mdash; <span>Follow-Up 50</span></h1>
-    <div class="sub">SDAT Verified &bull; Maryland Agency Outreach &bull; April 2026</div>
+
+<div class="top-banner">
+  <div class="banner-left">
+    <div class="banner-eyebrow">Proles Home Healthcare Consultants &bull; Maryland</div>
+    <div class="banner-title">Digitalization <span>Outreach</span></div>
+    <div class="banner-sub">SDAT Verified &bull; Follow-Up 50 &bull; April 2026</div>
   </div>
-  <div class="brand-badge">Proles Home Healthcare Consultants</div>
+  <div class="banner-right">
+    <div class="banner-stat">
+      <div class="stat-num">50</div>
+      <div class="stat-label">Agencies</div>
+    </div>
+    <div class="banner-stat">
+      <div class="stat-num">41</div>
+      <div class="stat-label">Active</div>
+    </div>
+    <div class="banner-stat">
+      <div class="stat-num">0</div>
+      <div class="stat-label">Forfeited</div>
+    </div>
+    <img src="/static/logo.png" class="banner-logo" alt="Proles HHC">
+  </div>
 </div>
+<div class="accent-bar"></div>
+
+<div class="content">
 <table>
   <thead><tr>
     <th>#</th><th>Agency Name</th><th>Type</th><th>City</th><th>Phone</th><th>Email</th><th>Actions</th>
   </tr></thead>
   <tbody>{rows}</tbody>
 </table>
+</div>
+
+<div class="modal-overlay" id="modal" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <div class="modal-agency" id="m-name"></div>
+        <div class="modal-type" id="m-type"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-sdat" id="m-sdat"></div>
+      <div class="modal-stat"><strong>City:</strong> <span id="m-city"></span></div>
+      <div class="modal-stat"><strong>Phone:</strong> <span id="m-phone"></span></div>
+      <div class="modal-stat"><strong>Email:</strong> <span id="m-email"></span></div>
+    </div>
+    <div class="modal-actions">
+      <a id="m-proposal" href="#" class="modal-btn btn-gold">View Proposal</a>
+      <a id="m-email-btn" href="#" class="modal-btn btn-red">Email Template</a>
+      <button id="m-draft" class="modal-btn btn-red" onclick="genDraftModal()">Generate Gmail Draft</button>
+      <a id="m-demo" href="#" class="modal-btn btn-demo" target="_blank">View Demo Site</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+var _modalRow = null;
+function openModal(n, name, type, city, phone, email, sdat) {{
+  _modalRow = n;
+  document.getElementById('m-name').textContent    = name;
+  document.getElementById('m-type').textContent    = type;
+  document.getElementById('m-city').textContent    = city;
+  document.getElementById('m-phone').textContent   = phone;
+  document.getElementById('m-email').textContent   = email;
+  document.getElementById('m-proposal').href       = '/proposal/' + n;
+  document.getElementById('m-email-btn').href      = '/email/' + n;
+  document.getElementById('m-demo').href           = '/demo/' + n;
+  var sdatEl = document.getElementById('m-sdat');
+  var sdatColors = {{ACTIVE:'#1a4d1a,#5aff5a',REVIVED:'#1a1a4d,#5a8aff',INCORPORATED:'#3d2a00,#ECAA27',FORFEITED:'#4d1a1a,#ff5a5a'}};
+  if (sdat && sdatColors[sdat]) {{
+    var parts = sdatColors[sdat].split(',');
+    sdatEl.style.background = parts[0]; sdatEl.style.color = parts[1]; sdatEl.textContent = sdat;
+  }} else {{
+    sdatEl.textContent = '';
+  }}
+  document.getElementById('modal').classList.add('open');
+}}
+function closeModal() {{ document.getElementById('modal').classList.remove('open'); _modalRow = null; }}
+async function genDraftModal() {{
+  if (!_modalRow) return;
+  var btn = document.getElementById('m-draft');
+  btn.textContent = 'Generating...'; btn.disabled = true;
+  try {{
+    var res = await fetch('/generate-draft/' + _modalRow);
+    var data = await res.json();
+    if (data.error) throw new Error(data.error);
+    showToast('Draft created in Gmail — PDF attached');
+    setTimeout(() => window.open(data.gmail_url, '_blank'), 500);
+    closeModal();
+  }} catch(e) {{ showToast('Error: ' + e.message); }}
+  finally {{ btn.textContent = 'Generate Gmail Draft'; btn.disabled = false; }}
+}}
+function showToast(msg) {{
+  var t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}}
+document.addEventListener('keydown', function(e) {{ if (e.key === 'Escape') closeModal(); }});
+</script>
 </body>
 </html>"""
     return Response(html, mimetype='text/html')
@@ -1251,6 +1641,15 @@ def confirm_booking():
                 print(f'[prospect email] {e}')
 
     return jsonify({'success': True, 'meet_link': meet_link})
+
+
+@app.route('/demo/<int:row_num>')
+def demo_site(row_num):
+    agencies = load_agencies()
+    agency = agencies.get(row_num)
+    if not agency:
+        abort(404)
+    return Response(build_demo(agency, row_num), mimetype='text/html')
 
 
 if __name__ == '__main__':
