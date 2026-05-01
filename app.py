@@ -1416,7 +1416,7 @@ def book(row_num):
 
     # Build fake-busy slots per day — {{date_iso: [slot_indices]}}
     slot_labels = _slot_labels()
-    busy_map = {{}}
+    busy_map = {}
     for d in days:
         h = int(hashlib.md5(d.isoformat().encode()).hexdigest()[:8], 16)
         busy = []
@@ -1466,11 +1466,19 @@ def book(row_num):
     <div class="meet-pill"        id="pill-zoom" onclick="setMeet('Zoom')">&#128249; Zoom</div>
   </div>
 
-  <div class="field-row single" style="margin-bottom:14px;">
+  <div class="field-row" style="margin-bottom:14px;">
     <div>
       <label class="field-label">Select a Date</label>
       <select id="date-sel" onchange="onDateChange(this.value)">
         {date_options_html}
+      </select>
+    </div>
+    <div>
+      <label class="field-label">Preferred Contact</label>
+      <select id="contact-pref-sel" name="contact_pref">
+        <option value="Email">Email</option>
+        <option value="Phone">Phone</option>
+        <option value="Both">Both</option>
       </select>
     </div>
   </div>
