@@ -863,6 +863,7 @@ def build_client_site(page_html, agency, n):
 
     h = page_html
     h = h.replace('Inspired Options Inc', name)
+    h = h.replace('Inspired Options Care', name)
     h = h.replace('Inspired Options', name)
     h = h.replace('+1 (443) 374-2931', phone)
     h = h.replace('(443) 374-2931', phone)
@@ -888,6 +889,7 @@ def build_client_site(page_html, agency, n):
     agency_email = email if email else f'info@{slugify(name)}.com'
     h = h.replace('mailto:info@inspiredoptionscare.com', f'mailto:{agency_email}')
     h = h.replace('info@inspiredoptionscare.com', agency_email)
+    h = h.replace('inspiredoptionscare.com', f'{slugify(name)}.com')
 
     # tel: href with agency phone digits
     phone_digits = re.sub(r'\D', '', phone)
