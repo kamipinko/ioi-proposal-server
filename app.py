@@ -602,7 +602,7 @@ def build_email_html(agency, n):
     </ul>
 
     <p style="margin-bottom:16px;">We built a personalized demo site just for <strong>{name}</strong>. See it live:
-    <a href="{RAILWAY_URL}/client-site/{n}/" style="color:#8a0a0a;font-weight:bold;">{RAILWAY_URL}/client-site/{n}/</a> &mdash;
+    <a href="{RAILWAY_URL}/demo/{n}" style="color:#8a0a0a;font-weight:bold;">{RAILWAY_URL}/demo/{n}</a> &mdash;
     a branded homepage, service pages, and contact forms &mdash; exactly what your agency&rsquo;s site will look like.</p>
 
     <p style="margin-bottom:16px;">Beyond the website itself, every site we build includes <strong>local SEO setup</strong> &mdash; Google Business Profile configuration, location-based keyword targeting for {city}, and on-page metadata &mdash; so families in your area can find you when they search. Most agencies without a web presence are losing clients to competitors simply because they can&rsquo;t be found online.</p>
@@ -630,7 +630,7 @@ def build_email_html(agency, n):
       <strong style="color:#f5f0e8;">Alex Thuku</strong><br>
       Proles Home Healthcare Consultants<br>
       <a href="https://{COMPANY_URL}" style="color:#ECAA27;">{COMPANY_URL}</a> |
-      amthuku@gmail.com | (443) 374-2931 | Baltimore, MD
+      amthuku@gmail.com | (434) 429-9296 | Baltimore, MD
     </div>
   </div>
 </div>
@@ -651,7 +651,7 @@ def build_email_text(agency, n):
         f"  • A professional, branded website — mobile-friendly and fast\n"
         f"  • Staff & employee portal — internal tools your team can use\n"
         f"  • Appointment & contact forms — so families can reach you directly\n\n"
-        f"See your personalized demo site: {RAILWAY_URL}/client-site/{n}/\n\n"
+        f"See your personalized demo site: {RAILWAY_URL}/demo/{n}\n\n"
         f"Beyond the website itself, every site we build includes local SEO setup — Google Business Profile configuration, location-based keyword targeting for your area, and on-page metadata — so families can find you when they search online.\n\n"
         f"See the attached one-page proposal PDF for full details and pricing.\n\n"
         f"Schedule a free 15-minute call: {book_url}\n\n"
@@ -659,7 +659,7 @@ def build_email_text(agency, n):
         f"Best regards,\n"
         f"Alex Thuku\n"
         f"Proles Home Healthcare Consultants | {COMPANY_URL}\n"
-        f"amthuku@gmail.com | (443) 374-2931 | Baltimore, MD"
+        f"amthuku@gmail.com | (434) 429-9296 | Baltimore, MD"
     )
 
 
@@ -724,23 +724,14 @@ def build_proposal(agency, n):
       </ul>
     </div>
     <div>
-      <div class="section-label label-gold">Live Example</div>
+      <div class="section-label label-gold">Your Demo Site</div>
       <div class="example-box">
-        <a class="example-url" href="{RAILWAY_URL}/client-site/{n}/" target="_blank">{RAILWAY_URL}/client-site/{n}/</a>
+        <a class="example-url" href="{RAILWAY_URL}/demo/{n}" target="_blank">{RAILWAY_URL}/demo/{n}</a>
         <div class="example-desc">
           This personalized demo was built specifically for <strong style="color:#ECAA27">{name}</strong> &mdash; a branded homepage, service pages, and contact forms. Exactly what your live site will look like.
         </div>
-        <span class="example-badge">Live in 3 weeks</span>
+        <span class="example-badge">PERSONALIZED FOR YOU</span>
       </div>
-    </div>
-  </div>
-
-  <div class="section">
-    <span class="section-label label-gold">YOUR DEMO SITE</span>
-    <div class="example-box">
-      <a class="example-url" href="{RAILWAY_URL}/client-site/{n}/" target="_blank">{RAILWAY_URL}/client-site/{n}/</a>
-      <div class="example-desc">This preview was built specifically for <strong style="color:#ECAA27">{name}</strong>. Click the link above to see exactly what your website would look like &mdash; built and ready within 3 weeks.</div>
-      <span class="example-badge">PERSONALIZED FOR YOU</span>
     </div>
   </div>
 
@@ -767,7 +758,7 @@ def build_proposal(agency, n):
     </div>
     <div class="cta-contact">
       <a href="mailto:amthuku@gmail.com">amthuku@gmail.com</a><br>
-      (443) 374-2931<br>
+      (434) 429-9296<br>
       Alexander Thuku
     </div>
   </div>
@@ -858,7 +849,7 @@ def demo_services(agency_type):
 def build_client_site(page_html, agency, n):
     name  = (agency.get('name') or 'Your Agency').strip()
     city  = (agency.get('city') or 'Your City').strip()
-    phone = (agency.get('phone') or '+1 (443) 374-2931').strip()
+    phone = (agency.get('phone') or '+1 (434) 429-9296').strip()
     base  = f'/client-site/{n}'
 
     h = page_html
@@ -928,9 +919,9 @@ def build_client_site(page_html, agency, n):
     h = h.replace('Inspired Options Inc', name)
     h = h.replace('Inspired Options Care', name)
     h = h.replace('Inspired Options', name)
-    h = h.replace('+1 (443) 374-2931', phone)
-    h = h.replace('(443) 374-2931', phone)
-    h = h.replace('443-374-2931', phone)
+    h = h.replace('+1 (434) 429-9296', phone)
+    h = h.replace('(434) 429-9296', phone)
+    h = h.replace('434-429-9296', phone)
     h = h.replace('Baltimore, MD', f'{city}, MD')
     h = h.replace('Baltimore, Maryland', f'{city}, Maryland')
     h = h.replace('href="index.html"',    f'href="{base}/"')
@@ -958,7 +949,7 @@ def build_client_site(page_html, agency, n):
     phone_digits = re.sub(r'\D', '', phone)
     if len(phone_digits) >= 10:
         tel_phone = f'+1{phone_digits[-10:]}'
-        h = h.replace('tel:+14433742931', f'tel:{tel_phone}')
+        h = h.replace('tel:+14344299296', f'tel:{tel_phone}')
 
     # Instagram handle
     h = h.replace('https://www.instagram.com/InspiredOptionsCare', '#')
@@ -1826,7 +1817,7 @@ def confirm_booking():
         f"Meeting link: {meet_text}\n\n"
         f"We look forward to speaking with you about {agency_name}.\n\n"
         f"Best regards,\nAlex Thuku\nProles Home Healthcare Consultants\n"
-        f"{COMPANY_URL} | amthuku@gmail.com | (443) 374-2931"
+        f"{COMPANY_URL} | amthuku@gmail.com | (434) 429-9296"
     )
 
     def _send_simple(to_addr, subj, body):
