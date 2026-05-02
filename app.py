@@ -862,6 +862,69 @@ def build_client_site(page_html, agency, n):
     base  = f'/client-site/{n}'
 
     h = page_html
+
+    OLD_TEAM_GRID = """        <div class="team-grid">
+          <div class="team-card">
+            <div class="team-avatar" aria-hidden="true">👤</div>
+            <h4>Dr. Patricia Ametepi</h4>
+            <p class="team-role">Founder &amp; Executive Director</p>
+            <p>With over 20 years in disability and behavioral health services, Dr. Ametepi founded Inspired Options Inc to bring person-centered care to Baltimore's most underserved communities. She holds a doctorate in social work and leads the organization's strategic direction and community partnerships.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" aria-hidden="true">👤</div>
+            <h4>Marcus Johnson, LCSW</h4>
+            <p class="team-role">Director of Clinical Services</p>
+            <p>A licensed clinical social worker with 15 years in behavioral health, Marcus oversees care planning, clinical quality, and staff training. He specializes in trauma-informed care and positive behavioral support for individuals with intellectual disabilities.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" aria-hidden="true">👤</div>
+            <h4>Tamara Reeves, RN</h4>
+            <p class="team-role">Care Coordination Supervisor</p>
+            <p>A registered nurse and certified DDA support specialist, Tamara manages client intake, assessments, and ongoing care coordination. She ensures that every individual's care plan is current, compliant, and built around their personal goals.</p>
+          </div>
+          <div class="team-card">
+            <div class="team-avatar" aria-hidden="true">👤</div>
+            <h4>David Williams</h4>
+            <p class="team-role">Compliance &amp; Training Manager</p>
+            <p>David leads staff credentialing, DDA compliance, and HIPAA policy for Inspired Options Inc. He oversees the organization's DDS training program and ensures all staff meet Maryland's DSP certification requirements before they begin serving clients.</p>
+          </div>
+        </div>"""
+    NEW_TEAM_GRID = """<div class="team-grid">
+  <div class="team-card">
+    <img class="team-avatar" src="https://randomuser.me/api/portraits/women/44.jpg" alt="Team member" style="object-fit:cover;">
+    <h4>Dr. Angela Brooks</h4>
+    <p class="team-role">Founder &amp; Executive Director</p>
+    <p>With over 18 years in disability and behavioral health services, Dr. Brooks founded this agency to bring person-centered care to Maryland&rsquo;s most underserved communities. She leads strategic direction, community partnerships, and the mission of every client we serve.</p>
+  </div>
+  <div class="team-card">
+    <img class="team-avatar" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Team member" style="object-fit:cover;">
+    <h4>James Carter, LCSW</h4>
+    <p class="team-role">Director of Clinical Services</p>
+    <p>A licensed clinical social worker with 14 years in behavioral health, James oversees care planning, clinical quality, and staff training. He specializes in trauma-informed care and positive behavioral support for individuals with intellectual disabilities.</p>
+  </div>
+  <div class="team-card">
+    <img class="team-avatar" src="https://randomuser.me/api/portraits/women/68.jpg" alt="Team member" style="object-fit:cover;">
+    <h4>Patricia Moore, RN</h4>
+    <p class="team-role">Care Coordination Supervisor</p>
+    <p>A registered nurse and certified DDA support specialist, Patricia manages client intake, assessments, and ongoing care coordination. Every individual&rsquo;s care plan is current, compliant, and built around their personal goals.</p>
+  </div>
+  <div class="team-card">
+    <img class="team-avatar" src="https://randomuser.me/api/portraits/men/75.jpg" alt="Team member" style="object-fit:cover;">
+    <h4>Robert Davis</h4>
+    <p class="team-role">Compliance &amp; Training Manager</p>
+    <p>Robert leads staff credentialing, DDA compliance, and HIPAA policy. He oversees the DSP training program and ensures all staff meet Maryland&rsquo;s certification requirements before they begin serving clients.</p>
+  </div>
+</div>"""
+    h = h.replace(OLD_TEAM_GRID, NEW_TEAM_GRID)
+
+    OLD_HISTORY = """          <p>Inspired Options Inc was founded in 2014 by Dr. Patricia Ametepi, a social work professional with two decades of experience in disability and behavioral health services. After years working within institutional settings, she saw the same gap over and over: individuals with cognitive and developmental disabilities who were capable of living rich, connected lives — but lacked the community-based support to do so.</p>
+          <p>She founded Inspired Options Inc with a simple belief: that every person deserves a real choice in how they live, where they live, and who supports them. Starting with a small team and three clients in Baltimore City, the organization grew steadily by earning the trust of families, referral partners, and the individuals we serve.</p>
+          <p>Today, Inspired Options Inc is an approved Maryland DDA provider serving individuals and families across Baltimore City, Baltimore County, Anne Arundel County, and Howard County. Our team of trained care professionals is united by one mission — to help every person we serve live fully in their community.</p>"""
+    NEW_HISTORY = """          <p>This agency was founded by a healthcare professional with decades of experience in disability and behavioral health services. After years working within institutional settings, the founder saw the same gap over and over: individuals with cognitive and developmental disabilities who were capable of living rich, connected lives — but lacked the community-based support to do so.</p>
+          <p>The agency was built on a simple belief: that every person deserves a real choice in how they live, where they live, and who supports them.</p>
+          <p>Today, this agency is an approved Maryland DDA provider serving individuals and families across the region. Our team of trained care professionals is united by one mission — to help every person we serve live fully in their community.</p>"""
+    h = h.replace(OLD_HISTORY, NEW_HISTORY)
+
     h = h.replace('Inspired Options Inc', name)
     h = h.replace('Inspired Options Care', name)
     h = h.replace('Inspired Options', name)

@@ -621,7 +621,8 @@ section { padding: var(--section-pad); }
   border-radius: 0;
   background: var(--navy-dark);
   margin: 0 auto 1rem;
-  display: flex;
+  display: block;
+  object-fit: cover;
   align-items: center;
   justify-content: center;
   font-size: 2.5rem;
