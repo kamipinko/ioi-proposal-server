@@ -27,7 +27,7 @@ EXAMPLE_HREF = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 
 
 def _load_ioi_template(filename):
-    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'inspired-options-website', filename)
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'ioi_templates', filename)
     path = os.path.normpath(path)
     try:
         with open(path, 'r', encoding='utf-8') as f:
@@ -1779,7 +1779,7 @@ def demo_site(row_num):
 
 @app.route('/client-site/style.css')
 def client_site_css():
-    css_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'inspired-options-website', 'style.css')
+    css_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'static', 'ioi_templates', 'style.css')
     css_path = os.path.normpath(css_path)
     try:
         with open(css_path, 'r', encoding='utf-8') as f:
