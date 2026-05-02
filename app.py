@@ -25,6 +25,22 @@ RAILWAY_URL = 'https://ioi-proposal-server-production.up.railway.app'
 EXAMPLE_DISPLAY = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 EXAMPLE_HREF = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 
+
+def _load_ioi_template(filename):
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'inspired-options-website', filename)
+    path = os.path.normpath(path)
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except FileNotFoundError:
+        return f'<html><body><h1>{filename} not found</h1></body></html>'
+
+_IOI_INDEX    = _load_ioi_template('index.html')
+_IOI_SERVICES = _load_ioi_template('services.html')
+_IOI_ABOUT    = _load_ioi_template('about.html')
+_IOI_CONTACT  = _load_ioi_template('contact.html')
+
+
 GMAIL_SCOPES = [
     'https://www.googleapis.com/auth/gmail.compose',
     'https://www.googleapis.com/auth/calendar',
@@ -722,7 +738,7 @@ def build_proposal(agency, n):
   <div class="section">
     <span class="section-label label-gold">YOUR DEMO SITE</span>
     <div class="example-box">
-      <a class="example-url" href="{RAILWAY_URL}/demo/{n}" target="_blank">{RAILWAY_URL}/demo/{n}</a>
+      <a class="example-url" href="{RAILWAY_URL}/client-site/{n}/" target="_blank">{RAILWAY_URL}/client-site/{n}/</a>
       <div class="example-desc">This preview was built specifically for <strong style="color:#ECAA27">{name}</strong>. Click the link above to see exactly what your website would look like &mdash; built and ready within 3 weeks.</div>
       <span class="example-badge">PERSONALIZED FOR YOU</span>
     </div>
@@ -837,6 +853,36 @@ def demo_services(agency_type):
         ('Care Coordination', 'Connecting clients to the right services and community resources.'),
         ('Family Support', 'Guidance and respite resources for family caregivers.'),
     ]
+
+
+def build_client_site(page_html, agency, n):
+    name  = (agency.get('name') or 'Your Agency').strip()
+    city  = (agency.get('city') or 'Your City').strip()
+    phone = (agency.get('phone') or '+1 (443) 374-2931').strip()
+    base  = f'/client-site/{n}'
+
+    h = page_html
+    h = h.replace('Inspired Options Inc', name)
+    h = h.replace('Inspired Options', name)
+    h = h.replace('+1 (443) 374-2931', phone)
+    h = h.replace('(443) 374-2931', phone)
+    h = h.replace('443-374-2931', phone)
+    h = h.replace('Baltimore, MD', f'{city}, MD')
+    h = h.replace('Baltimore, Maryland', f'{city}, Maryland')
+    h = h.replace('href="index.html"',    f'href="{base}/"')
+    h = h.replace('href="services.html"', f'href="{base}/services"')
+    h = h.replace('href="about.html"',    f'href="{base}/about"')
+    h = h.replace('href="contact.html"',  f'href="{base}/contact"')
+    h = h.replace('href="who-we-serve.html"', f'href="{base}/"')
+    h = h.replace('href="faq.html"',      f'href="{base}/"')
+    h = h.replace('href="careers.html"',  f'href="{base}/"')
+    h = h.replace('href="employment.html"', f'href="{base}/"')
+    h = h.replace('href="cims.html"',     f'href="{base}/"')
+    h = h.replace('href="style.css"', 'href="/client-site/style.css"')
+    h = h.replace("href='style.css'", "href='/client-site/style.css'")
+    h = h.replace('https://inspiredoptionscare.com', f'/client-site/{n}')
+    h = h.replace('http://inspiredoptionscare.com',  f'/client-site/{n}')
+    return h
 
 
 def build_demo(agency, n):
@@ -1729,6 +1775,47 @@ def demo_site(row_num):
     if not agency:
         abort(404)
     return Response(build_demo(agency, row_num), mimetype='text/html')
+
+
+@app.route('/client-site/style.css')
+def client_site_css():
+    css_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'inspired-options-website', 'style.css')
+    css_path = os.path.normpath(css_path)
+    try:
+        with open(css_path, 'r', encoding='utf-8') as f:
+            css = f.read()
+    except FileNotFoundError:
+        css = ''
+    return Response(css, mimetype='text/css')
+
+@app.route('/client-site/<int:n>/')
+@app.route('/client-site/<int:n>')
+def client_site_index(n):
+    agencies = load_agencies()
+    agency   = agencies.get(n) or {}
+    html = build_client_site(_IOI_INDEX, agency, n)
+    return Response(html, mimetype='text/html')
+
+@app.route('/client-site/<int:n>/services')
+def client_site_services(n):
+    agencies = load_agencies()
+    agency   = agencies.get(n) or {}
+    html = build_client_site(_IOI_SERVICES, agency, n)
+    return Response(html, mimetype='text/html')
+
+@app.route('/client-site/<int:n>/about')
+def client_site_about(n):
+    agencies = load_agencies()
+    agency   = agencies.get(n) or {}
+    html = build_client_site(_IOI_ABOUT, agency, n)
+    return Response(html, mimetype='text/html')
+
+@app.route('/client-site/<int:n>/contact')
+def client_site_contact(n):
+    agencies = load_agencies()
+    agency   = agencies.get(n) or {}
+    html = build_client_site(_IOI_CONTACT, agency, n)
+    return Response(html, mimetype='text/html')
 
 
 if __name__ == '__main__':
