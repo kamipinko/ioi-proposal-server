@@ -601,9 +601,9 @@ def build_email_html(agency, n):
       <li style="margin-bottom:8px;"><strong>Appointment &amp; contact forms</strong> &mdash; so families and referral partners can reach you directly</li>
     </ul>
 
-    <p style="margin-bottom:16px;">We recently built a complete digital platform for another Maryland home health agency. See it live:
-    <a href="{EXAMPLE_HREF}" style="color:#8a0a0a;font-weight:bold;">{EXAMPLE_DISPLAY}</a> &mdash;
-    a branded homepage, staff portal, appointment system, and contact forms. We delivered it in under three weeks.</p>
+    <p style="margin-bottom:16px;">We built a personalized demo site just for <strong>{name}</strong>. See it live:
+    <a href="{RAILWAY_URL}/client-site/{n}/" style="color:#8a0a0a;font-weight:bold;">{RAILWAY_URL}/client-site/{n}/</a> &mdash;
+    a branded homepage, service pages, and contact forms &mdash; exactly what your agency&rsquo;s site will look like.</p>
 
     <p style="margin-bottom:16px;">Beyond the website itself, every site we build includes <strong>local SEO setup</strong> &mdash; Google Business Profile configuration, location-based keyword targeting for {city}, and on-page metadata &mdash; so families in your area can find you when they search. Most agencies without a web presence are losing clients to competitors simply because they can&rsquo;t be found online.</p>
 
@@ -651,7 +651,7 @@ def build_email_text(agency, n):
         f"  • A professional, branded website — mobile-friendly and fast\n"
         f"  • Staff & employee portal — internal tools your team can use\n"
         f"  • Appointment & contact forms — so families can reach you directly\n\n"
-        f"See a live example: {EXAMPLE_DISPLAY} ({EXAMPLE_HREF})\n\n"
+        f"See your personalized demo site: {RAILWAY_URL}/client-site/{n}/\n\n"
         f"Beyond the website itself, every site we build includes local SEO setup — Google Business Profile configuration, location-based keyword targeting for your area, and on-page metadata — so families can find you when they search online.\n\n"
         f"See the attached one-page proposal PDF for full details and pricing.\n\n"
         f"Schedule a free 15-minute call: {book_url}\n\n"
@@ -726,9 +726,9 @@ def build_proposal(agency, n):
     <div>
       <div class="section-label label-gold">Live Example</div>
       <div class="example-box">
-        <a class="example-url" href="{EXAMPLE_HREF}">{EXAMPLE_DISPLAY}</a>
+        <a class="example-url" href="{RAILWAY_URL}/client-site/{n}/" target="_blank">{RAILWAY_URL}/client-site/{n}/</a>
         <div class="example-desc">
-          Built for a Maryland home health agency &mdash; full branded site, staff portal, appointment system, and contact forms. Exactly what we&rsquo;ll build for you.
+          This personalized demo was built specifically for <strong style="color:#ECAA27">{name}</strong> &mdash; a branded homepage, service pages, and contact forms. Exactly what your live site will look like.
         </div>
         <span class="example-badge">Live in 3 weeks</span>
       </div>
@@ -882,6 +882,24 @@ def build_client_site(page_html, agency, n):
     h = h.replace("href='style.css'", "href='/client-site/style.css'")
     h = h.replace('https://inspiredoptionscare.com', f'/client-site/{n}')
     h = h.replace('http://inspiredoptionscare.com',  f'/client-site/{n}')
+
+    # Email address
+    email = (agency.get('email') or '').strip()
+    agency_email = email if email else f'info@{slugify(name)}.com'
+    h = h.replace('mailto:info@inspiredoptionscare.com', f'mailto:{agency_email}')
+    h = h.replace('info@inspiredoptionscare.com', agency_email)
+
+    # tel: href with agency phone digits
+    phone_digits = re.sub(r'\D', '', phone)
+    if len(phone_digits) >= 10:
+        tel_phone = f'+1{phone_digits[-10:]}'
+        h = h.replace('tel:+14433742931', f'tel:{tel_phone}')
+
+    # Instagram handle
+    h = h.replace('https://www.instagram.com/InspiredOptionsCare', '#')
+    h = h.replace('@InspiredOptionsCare on Instagram', f'@{name}')
+    h = h.replace('InspiredOptionsCare', name.replace(' ', ''))
+
     return h
 
 
