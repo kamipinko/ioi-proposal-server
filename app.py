@@ -947,141 +947,364 @@ def build_client_site(page_html, agency, n):
 
 
 def build_demo(agency, n):
-    name   = agency.get('name')  or 'Agency'
-    atype  = agency.get('type')  or ''
-    city   = agency.get('city')  or 'Maryland'
-    phone  = agency.get('phone') or ''
-    phrase = type_phrase(atype)
+    name     = agency.get('name')  or 'Agency'
+    atype    = agency.get('type')  or ''
+    city     = agency.get('city')  or 'Maryland'
+    phone    = agency.get('phone') or ''
+    email    = agency.get('email') or ''
+    phrase   = type_phrase(atype)
     services = demo_services(atype)
 
     t = atype.lower()
     if 'home health' in t:
-        svc_type = 'home health'
-    elif 'residential' in t or 'rsa' in t or 'dda' in t:
-        svc_type = 'residential care'
-    elif 'day care' in t or 'adult day' in t:
-        svc_type = 'adult day care'
+        svc_type     = 'home health'
+        mission_text = (
+            f'At {name}, we believe that healing happens best at home. Our licensed clinicians and '
+            f'compassionate home health aides deliver skilled nursing, therapy, and personal care '
+            f'directly to our clients across {city} and surrounding Maryland communities. '
+            f'We build individualized care plans that treat the whole person &mdash; not just the diagnosis.'
+        )
+        who_serve = [
+            ('Seniors &amp; Older Adults',           'Helping seniors maintain independence and dignity in their own homes.'),
+            ('Post-Surgical Patients',               'Supporting safe recovery after hospitalization or surgery.'),
+            ('Individuals with Chronic Conditions',  'Ongoing skilled care for diabetes, cardiac conditions, and more.'),
+            ('Families Seeking Respite',             'Professional home care that gives family caregivers a well-deserved break.'),
+        ]
+    elif 'dda' in t or 'residential' in t or 'rsa' in t:
+        svc_type     = 'residential care'
+        mission_text = (
+            f'At {name}, we are committed to helping individuals with developmental disabilities '
+            f'live full, self-directed lives in their communities. Our certified support staff provide '
+            f'residential care, skills training, and community integration services tailored to each '
+            f"person&rsquo;s unique goals and needs across {city}, Maryland."
+        )
+        who_serve = [
+            ('Individuals with Developmental Disabilities', 'Person-centered support for adults with intellectual and developmental disabilities.'),
+            ('Families Seeking Supported Living',           'Residential and in-home supports that keep families informed and involved.'),
+            ('Those Transitioning from Institutional Care', 'Community-based alternatives for individuals moving from group homes or facilities.'),
+            ('Youth &amp; Young Adults',                    'Early intervention and skills-building for youth with autism and intellectual disabilities.'),
+        ]
+    elif 'day care' in t or 'adult day' in t or 'adult medical' in t:
+        svc_type     = 'adult day care'
+        mission_text = (
+            f'At {name}, we provide a warm, structured daytime environment for adults who need '
+            f'supervision, socialization, and skilled care. Our licensed adult day programs in {city} '
+            f'support independence and quality of life while giving family caregivers the reliable '
+            f'respite they need to thrive.'
+        )
+        who_serve = [
+            ('Seniors with Memory Conditions',   "Safe, structured programming for individuals with dementia and Alzheimer&rsquo;s."),
+            ('Adults with Physical Disabilities', 'Accessible day programs with therapy, activities, and skilled nursing.'),
+            ('Caregivers Needing Daily Respite',  'Reliable daytime care so family members can work and recharge.'),
+            ('Individuals Seeking Engagement',    'Community connection and meaningful activities for isolated adults.'),
+        ]
     else:
-        svc_type = 'care'
+        svc_type     = 'care'
+        mission_text = (
+            f'At {name}, our mission is simple: provide exceptional, compassionate care that empowers '
+            f'every client to live with dignity, independence, and purpose. Serving {city} and the '
+            f'surrounding Maryland area, we offer a full continuum of care services coordinated around '
+            f"each individual&rsquo;s unique needs and goals."
+        )
+        who_serve = [
+            ('Older Adults &amp; Seniors',           'Personalized care and support to help seniors remain in their communities.'),
+            ('Individuals with Disabilities',        'Tailored support services for adults with physical and cognitive disabilities.'),
+            ('Post-Hospitalization Clients',         'Transitional care and home support after hospital discharge.'),
+            ('Families Seeking Care Coordination',   'Connecting families to the right services and community resources.'),
+        ]
 
+    # Service cards
     cards_html = ''
     for idx, (svc_name, svc_desc) in enumerate(services):
         num_str = f'0{idx + 1}'
         cards_html += (
-            f'<div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:28px;">'
-            f'<div style="font-size:11px;font-weight:900;color:#ECAA27;letter-spacing:2px;margin-bottom:12px;">{num_str}</div>'
-            f'<div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:10px;">{svc_name}</div>'
-            f'<div style="font-size:14px;color:#888888;line-height:1.6;">{svc_desc}</div>'
+            f'<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:32px;">'
+            f'<div style="font-size:13px;font-weight:900;color:#ECAA27;letter-spacing:3px;margin-bottom:14px;'
+            f"font-family:'Arial Black',Arial,sans-serif;\">{num_str}</div>"
+            f'<div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:10px;'
+            f"font-family:'Arial Black',Arial,sans-serif;\">{svc_name}</div>"
+            f'<div style="font-size:14px;color:#888888;line-height:1.7;">{svc_desc}</div>'
             f'</div>'
         )
 
+    # Who we serve cards
+    who_html = ''
+    for (group, desc) in who_serve:
+        who_html += (
+            f'<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-left:4px solid #ECAA27;padding:24px 28px;">'
+            f'<div style="font-size:16px;font-weight:900;color:#f5f0e8;margin-bottom:8px;'
+            f"font-family:'Arial Black',Arial,sans-serif;\">{group}</div>"
+            f'<div style="font-size:14px;color:#888888;line-height:1.6;">{desc}</div>'
+            f'</div>'
+        )
+
+    # Phone + email
     phone_html = ''
     if phone and phone != '—':
-        phone_html = f'<div style="font-size:36px;font-weight:900;color:#ECAA27;margin:16px 0;">{phone}</div>'
+        phone_html = (
+            f'<div style="font-size:40px;font-weight:900;color:#ECAA27;margin:20px 0;'
+            f"letter-spacing:1px;font-family:'Arial Black',Arial,sans-serif;\">{phone}</div>"
+        )
+    email_html = ''
+    if email and email != '—':
+        email_html = (
+            f'<div style="font-size:15px;color:#888888;margin-bottom:8px;">'
+            f'<a href="mailto:{email}" style="color:#ECAA27;text-decoration:none;">{email}</a>'
+            f'</div>'
+        )
+
+    accent_bar = '<div style="height:4px;background:linear-gradient(90deg,#8a0a0a,#ECAA27);"></div>'
+    name_upper = name.upper()
+    phrase_clean = phrase.rstrip(',')
 
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{name} &mdash; Professional Care Services</title>
+<title>{name} &mdash; Professional {svc_type.title()} Services</title>
 <style>
 * {{ box-sizing: border-box; margin: 0; padding: 0; }}
 body {{ font-family: Arial, Helvetica, sans-serif; background: #111111; color: #f5f0e8; }}
 a {{ text-decoration: none; }}
+html {{ scroll-behavior: smooth; }}
 </style>
 </head>
 <body>
 
+<!-- DEMO BANNER -->
 <div style="background:#ECAA27;color:#111111;font-size:10px;font-weight:900;text-transform:uppercase;
-     letter-spacing:2px;text-align:center;padding:10px 20px;position:fixed;top:0;left:0;right:0;
+     letter-spacing:2px;text-align:center;padding:0 20px;position:fixed;top:0;left:0;right:0;
      z-index:9999;height:38px;display:flex;align-items:center;justify-content:center;">
-  <span>DEMO PREVIEW &mdash; Built for {name} by Proles HHC &mdash; Not a live website</span>
+  <span>DEMO PREVIEW &mdash; BUILT FOR {name} BY PROLES HHC &mdash; NOT A LIVE WEBSITE</span>
   <a href="{RAILWAY_URL}/proposal/{n}" target="_blank"
-     style="position:absolute;right:20px;color:#8a0a0a;font-size:9px;font-weight:900;letter-spacing:1px;">
+     style="position:absolute;right:20px;color:#8a0a0a;font-size:9px;font-weight:900;
+            letter-spacing:1px;text-transform:uppercase;">
     VIEW PROPOSAL &rarr;
   </a>
 </div>
 
-<nav style="background:#111111;border-bottom:2px solid #ECAA27;position:sticky;top:38px;z-index:999;
+<!-- STICKY NAV -->
+<nav style="background:#111111;border-bottom:2px solid #ECAA27;position:sticky;top:38px;z-index:998;
      height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 60px;">
-  <div style="font-size:18px;font-weight:900;color:#ECAA27;">{name}</div>
-  <div style="display:flex;gap:32px;">
-    <a href="#services" style="color:#f5f0e8;font-size:14px;font-weight:600;"
+  <div style="font-size:16px;font-weight:900;color:#ECAA27;
+       font-family:'Arial Black',Arial,sans-serif;letter-spacing:-0.5px;">{name}</div>
+  <div style="display:flex;align-items:center;gap:28px;">
+    <a href="#services" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
        onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Services</a>
-    <a href="#about" style="color:#f5f0e8;font-size:14px;font-weight:600;"
+    <a href="#about" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
        onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">About</a>
-    <a href="#contact" style="color:#f5f0e8;font-size:14px;font-weight:600;"
-       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Contact</a>
+    <a href="#who-we-serve" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
+       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Who We Serve</a>
+    <a href="#careers" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
+       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Careers</a>
+    <a href="#contact"
+       style="background:#ECAA27;color:#111111;padding:9px 20px;font-size:12px;font-weight:900;
+              text-transform:uppercase;letter-spacing:2px;
+              clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));">
+      Contact Us
+    </a>
   </div>
 </nav>
 
-<section style="min-height:calc(100vh - 98px);background:#111111;padding:80px 60px;
-     display:flex;align-items:center;clip-path:polygon(0 0,100% 0,88% 100%,0 100%);
-     padding-right:calc(12% + 60px);">
+<!-- HERO -->
+<section style="min-height:100vh;background:#111111;padding:120px 60px 180px;position:relative;
+     clip-path:polygon(0 0,100% 0,100% calc(100% - 60px),0 100%);overflow:hidden;">
+  <div style="position:absolute;top:0;right:10%;width:3px;height:100%;
+       background:linear-gradient(180deg,transparent,#8a0a0a,transparent);opacity:0.4;transform:skewX(-20deg);"></div>
+  <div style="position:absolute;top:0;right:15%;width:1px;height:100%;
+       background:linear-gradient(180deg,transparent,#ECAA27,transparent);opacity:0.2;transform:skewX(-20deg);"></div>
+  <div style="display:flex;align-items:center;justify-content:space-between;max-width:1200px;gap:60px;">
+    <div style="flex:1;max-width:680px;">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
+        <div style="width:4px;height:32px;background:#ECAA27;flex-shrink:0;"></div>
+        <span style="font-size:12px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;">// {name}</span>
+      </div>
+      <div style="font-size:12px;font-weight:900;color:#888888;text-transform:uppercase;
+           letter-spacing:3px;margin-bottom:20px;">{city}, Maryland &middot; {phrase_clean}</div>
+      <h1 style="font-size:68px;font-weight:900;color:#f5f0e8;line-height:1.0;margin-bottom:24px;
+           letter-spacing:-2px;font-family:'Arial Black',Arial,sans-serif;">{name}</h1>
+      <p style="font-size:19px;color:#888888;line-height:1.6;margin-bottom:40px;">
+        Caring for your whole life &mdash; professional {svc_type} services for Maryland families.
+      </p>
+      <div style="display:flex;gap:16px;flex-wrap:wrap;">
+        <a href="#contact"
+           style="background:#ECAA27;color:#111111;padding:16px 36px;font-size:12px;font-weight:900;
+                  text-transform:uppercase;letter-spacing:2px;display:inline-block;
+                  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+                  font-family:'Arial Black',Arial,sans-serif;">
+          Request Services &rarr;
+        </a>
+        <a href="#services"
+           style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;padding:16px 36px;
+                  font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
+                  display:inline-block;font-family:'Arial Black',Arial,sans-serif;">
+          Learn More
+        </a>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:16px;min-width:220px;">
+      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:24px 28px;">
+        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">STATUS</div>
+        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">Maryland Licensed</div>
+        <div style="font-size:12px;color:#888888;margin-top:4px;">OHCQ Certified Provider</div>
+      </div>
+      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #8a0a0a;padding:24px 28px;">
+        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">LOCATION</div>
+        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">Serving {city}</div>
+        <div style="font-size:12px;color:#888888;margin-top:4px;">Maryland &amp; Surrounding Areas</div>
+      </div>
+      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:24px 28px;">
+        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">COMPLIANCE</div>
+        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">OHCQ Compliant</div>
+        <div style="font-size:12px;color:#888888;margin-top:4px;">State Regulated &amp; Inspected</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCENT BAR -->
+{accent_bar}
+
+<!-- MISSION -->
+<section id="about" style="background:#1a1a1a;padding:80px 60px;">
+  <div style="max-width:1200px;">
+    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">OUR MISSION</div>
+    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
+         font-family:'Arial Black',Arial,sans-serif;">Care That Puts You First</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+      <div>
+        <p style="font-size:16px;color:#888888;line-height:1.8;margin-bottom:24px;">{mission_text}</p>
+        <p style="font-size:15px;color:#666666;line-height:1.8;">
+          We work closely with families, care coordinators, and Maryland&rsquo;s DDA and OHCQ systems to
+          ensure every client receives the highest standard of care &mdash; delivered with respect and dignity.
+        </p>
+      </div>
+      <div style="background:#111111;border:1px solid #2a2a2a;border-left:4px solid #ECAA27;padding:36px;">
+        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;
+             margin-bottom:20px;font-family:'Arial Black',Arial,sans-serif;">OUR PROMISE</div>
+        <blockquote style="font-size:22px;font-weight:900;color:#f5f0e8;line-height:1.4;margin-bottom:20px;
+             font-family:'Arial Black',Arial,sans-serif;">
+          &ldquo;Every person we serve deserves to live fully in their community.&rdquo;
+        </blockquote>
+        <div style="height:2px;background:linear-gradient(90deg,#8a0a0a,#ECAA27);margin-bottom:20px;"></div>
+        <div style="font-size:13px;color:#888888;">Licensed by Maryland OHCQ &middot; {city}, MD</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ACCENT BAR -->
+{accent_bar}
+
+<!-- SERVICES -->
+<section id="services" style="background:#111111;padding:80px 60px;">
+  <div style="max-width:1200px;">
+    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHAT WE OFFER</div>
+    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
+         font-family:'Arial Black',Arial,sans-serif;">Our Services</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">{cards_html}</div>
+  </div>
+</section>
+
+<!-- WHY CHOOSE US -->
+<section style="background:#1a1a1a;padding:80px 60px;">
+  <div style="max-width:1200px;">
+    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHY {name_upper}</div>
+    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
+         font-family:'Arial Black',Arial,sans-serif;">Our Commitment to You</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;">
+      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
+        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
+             font-family:'Arial Black',Arial,sans-serif;">01</div>
+        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
+             font-family:'Arial Black',Arial,sans-serif;">Licensed &amp; Certified</div>
+        <div style="font-size:14px;color:#888888;line-height:1.7;">
+          Maryland OHCQ licensed and fully compliant. Your family&rsquo;s safety and trust is our highest priority.
+        </div>
+      </div>
+      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
+        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
+             font-family:'Arial Black',Arial,sans-serif;">02</div>
+        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
+             font-family:'Arial Black',Arial,sans-serif;">Maryland Based</div>
+        <div style="font-size:14px;color:#888888;line-height:1.7;">
+          Rooted in the {city} community. We understand the unique needs of Maryland families and the resources available to them.
+        </div>
+      </div>
+      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
+        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
+             font-family:'Arial Black',Arial,sans-serif;">03</div>
+        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
+             font-family:'Arial Black',Arial,sans-serif;">Personalized Care</div>
+        <div style="font-size:14px;color:#888888;line-height:1.7;">
+          Every client receives an individualized care plan tailored to their specific needs, goals, and family situation.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO WE SERVE -->
+<section id="who-we-serve" style="background:#111111;padding:80px 60px;">
+  <div style="max-width:1200px;">
+    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHO WE SERVE</div>
+    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
+         font-family:'Arial Black',Arial,sans-serif;">Serving Maryland Families</h2>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">{who_html}</div>
+  </div>
+</section>
+
+<!-- ACCENT BAR -->
+{accent_bar}
+
+<!-- CAREERS -->
+<section id="careers" style="background:#1a1a1a;padding:60px 60px;">
+  <div style="max-width:1200px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:32px;">
+    <div>
+      <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
+           letter-spacing:3px;margin-bottom:12px;font-family:'Arial Black',Arial,sans-serif;">JOIN OUR TEAM</div>
+      <h2 style="font-size:32px;font-weight:900;color:#f5f0e8;margin-bottom:12px;
+           font-family:'Arial Black',Arial,sans-serif;">Careers at {name}</h2>
+      <p style="font-size:15px;color:#888888;max-width:500px;">
+        We are always looking for compassionate, dedicated care professionals to join our team in {city}, Maryland.
+      </p>
+    </div>
+    <a href="#contact"
+       style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;padding:16px 36px;
+              font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
+              display:inline-block;font-family:'Arial Black',Arial,sans-serif;white-space:nowrap;">
+      View Openings &rarr;
+    </a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" style="background:#111111;padding:80px 60px;border-left:4px solid #ECAA27;">
   <div style="max-width:700px;">
     <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:20px;">{city}, Maryland &middot; {phrase}</div>
-    <h1 style="font-size:56px;font-weight:900;color:#f5f0e8;line-height:1.1;
-         margin-bottom:20px;letter-spacing:-1px;">{name}</h1>
-    <p style="font-size:18px;color:#888888;line-height:1.6;margin-bottom:40px;">
-      Providing professional {svc_type} services to families across {city} and surrounding Maryland communities.
-    </p>
-    <div style="display:flex;gap:16px;flex-wrap:wrap;">
-      <a href="#contact" style="background:#ECAA27;color:#111111;padding:16px 32px;
-         font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
-         clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));">
-        Request Services &rarr;
-      </a>
-      <a href="#services" style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;
-         padding:16px 32px;font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;">
-        Learn More
-      </a>
-    </div>
+         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">GET IN TOUCH</div>
+    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:16px;
+         font-family:'Arial Black',Arial,sans-serif;">Ready to Get Started?</h2>
+    <p style="font-size:16px;color:#888888;margin-bottom:8px;">{city}, Maryland</p>
+    {phone_html}
+    {email_html}
+    <a href="#"
+       style="display:inline-block;background:#ECAA27;color:#111111;padding:16px 40px;
+              font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-top:16px;
+              clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
+              font-family:'Arial Black',Arial,sans-serif;">
+      Contact Us Today
+    </a>
+    <p style="font-size:13px;color:#555555;margin-top:24px;">Serving {city} and surrounding Maryland communities.</p>
   </div>
 </section>
 
-<section id="services" style="background:#1a1a1a;padding:80px 60px;">
-  <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-       letter-spacing:3px;margin-bottom:16px;">WHAT WE OFFER</div>
-  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:48px;">Our Services</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">{cards_html}</div>
-</section>
-
-<section id="about" style="background:#111111;padding:80px 60px;">
-  <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-       letter-spacing:3px;margin-bottom:16px;">WHY CHOOSE US</div>
-  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:48px;">Our Commitment</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:32px;">
-    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
-      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9733;</div>
-      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Licensed &amp; Certified</div>
-      <div style="font-size:14px;color:#888888;line-height:1.6;">Maryland OHCQ licensed and fully compliant. Your family&rsquo;s safety and trust is our highest priority.</div>
-    </div>
-    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
-      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9670;</div>
-      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Maryland Based</div>
-      <div style="font-size:14px;color:#888888;line-height:1.6;">Rooted in the local community. We understand the unique needs of Maryland families and the resources available to them.</div>
-    </div>
-    <div style="background:#1a1a1a;border:1px solid #2a2a2a;padding:32px;">
-      <div style="font-size:28px;color:#ECAA27;margin-bottom:16px;">&#9829;</div>
-      <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:12px;">Personalized Care</div>
-      <div style="font-size:14px;color:#888888;line-height:1.6;">Every client receives an individualized care plan tailored to their specific needs, goals, and family situation.</div>
-    </div>
-  </div>
-</section>
-
-<section id="contact" style="background:#1a1a1a;padding:80px 60px;border-left:4px solid #ECAA27;">
-  <h2 style="font-size:36px;font-weight:900;color:#f5f0e8;margin-bottom:16px;">Ready to Get Started?</h2>
-  <p style="font-size:16px;color:#888888;margin-bottom:24px;">{city}, Maryland</p>
-  {phone_html}
-  <a href="#" style="display:inline-block;background:#ECAA27;color:#111111;padding:16px 40px;
-     font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-top:16px;
-     clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));">
-    Contact Us Today
-  </a>
-</section>
-
+<!-- FOOTER -->
 <footer style="background:#0a0a0a;padding:30px 60px;display:flex;
      justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
   <span style="font-size:12px;color:#444444;">&copy; 2026 {name} &middot; Licensed by Maryland OHCQ</span>
