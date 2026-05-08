@@ -625,6 +625,38 @@ def build_email_html(agency, n):
     </div>
   </div>
 
+  <div style="background:#111111;border-top:3px solid #ECAA27;padding:16px 28px;">
+    <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">WHAT YOU GET &mdash; AT A GLANCE</div>
+    <table style="width:100%;border-collapse:separate;border-spacing:4px;margin-bottom:12px;">
+      <tr>
+        <td style="text-align:center;padding:6px 8px;background:#1a1a1a;">
+          <div style="font-size:20px;font-weight:900;color:#ECAA27;line-height:1;">$1,800</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">All-In Investment</div>
+        </td>
+        <td style="text-align:center;padding:6px 8px;background:#1a1a1a;">
+          <div style="font-size:20px;font-weight:900;color:#ECAA27;line-height:1;">3 Wks</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Live Website</div>
+        </td>
+        <td style="text-align:center;padding:6px 8px;background:#1a1a1a;">
+          <div style="font-size:20px;font-weight:900;color:#ECAA27;line-height:1;">$13,200</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">Est. Year 1 Return</div>
+        </td>
+        <td style="text-align:center;padding:6px 8px;background:#1a1a1a;">
+          <div style="font-size:20px;font-weight:900;color:#ECAA27;line-height:1;">7.3&times;</div>
+          <div style="font-size:9px;color:rgba(255,255,255,0.7);text-transform:uppercase;letter-spacing:1px;margin-top:2px;">ROI</div>
+        </td>
+      </tr>
+    </table>
+    <div style="font-size:12px;color:#f5f0e8;line-height:2.0;margin-bottom:10px;">
+      &#10003; Professional website branded for <strong style="color:#ECAA27;">{name}</strong><br>
+      &#10003; Local SEO &mdash; families in <strong style="color:#ECAA27;">{city}</strong> find you on Google<br>
+      &#10003; Staff portal + contact forms &mdash; operational from day one
+    </div>
+    <div style="font-size:11px;color:rgba(255,255,255,0.55);">
+      Full one-page overview: <a href="{RAILWAY_URL}/overview/{n}" style="color:#ECAA27;">{RAILWAY_URL}/overview/{n}</a>
+    </div>
+  </div>
+
   <div style="background:#111111;padding:16px 28px;border-top:1px solid #2a2a2a;">
     <div style="font-size:12px;color:#888888;line-height:1.7;">
       <strong style="color:#f5f0e8;">Alex Thuku</strong><br>
@@ -661,6 +693,307 @@ def build_email_text(agency, n):
         f"Proles Home Healthcare Consultants | {COMPANY_URL}\n"
         f"amthuku@gmail.com | (434) 429-9296 | Baltimore, MD"
     )
+
+
+# ── Overview One-Pager ────────────────────────────────────────────────────────
+
+OVERVIEW_CSS = """
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #d0d0d0; font-family: Arial, sans-serif; font-size: 0.72rem; color: #111111; }
+  .page { width: 8.5in; background: #f5f0e8; margin: 20px auto; box-shadow: 0 4px 32px rgba(0,0,0,0.25); position: relative; }
+  .top-stripe { height: 6px; background: linear-gradient(to right, #8a0a0a 0%, #111111 50%, #ECAA27 100%); }
+  .page-inner { padding: 8px 22px; }
+  .no-print { position: absolute; top: 14px; right: 22px; }
+  .print-btn { background: #8a0a0a; color: #fff; font-family: Arial, sans-serif; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.08em; border: none; cursor: pointer; padding: 5px 14px; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); text-transform: uppercase; }
+  .print-btn:hover { background: #6a0808; }
+  .ovr-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; padding-right: 90px; }
+  .ovr-header-left h1 { font-family: Arial, sans-serif; font-size: 1.0rem; font-weight: 900; color: #111111; line-height: 1.1; letter-spacing: 0.02em; }
+  .ovr-header-left h1 span { color: #ECAA27; }
+  .ovr-sub { font-size: 0.68rem; color: #444444; margin-top: 1px; }
+  .ovr-header-right { display: flex; flex-direction: column; align-items: flex-end; }
+  .ovr-header-right img { height: 58px; width: auto; }
+  .ovr-meta { font-size: 0.6rem; color: #8a0a0a; letter-spacing: 0.09em; text-transform: uppercase; text-align: right; }
+  .divider { height: 2px; background: linear-gradient(to right, #8a0a0a, #111111, #ECAA27); margin: 3px 0; }
+  .section-label { font-size: 0.6rem; font-weight: 900; letter-spacing: 0.13em; text-transform: uppercase; color: #8a0a0a; margin-bottom: 2px; }
+  .stats-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 4px; }
+  .stat-box { background: #111111; color: #fff; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); padding: 4px 12px; text-align: center; }
+  .stat-val { font-size: 1.05rem; font-weight: 900; color: #ECAA27; line-height: 1; }
+  .stat-lbl { font-size: 0.6rem; color: rgba(255,255,255,0.75); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.07em; }
+  .snapshot-bar { background: #1a1a1a; color: #fff; display: flex; gap: 0; padding: 3px 10px; margin-bottom: 4px; align-items: flex-start; clip-path: polygon(0 0, 100% 0, calc(100% - 6px) 100%, 6px 100%); }
+  .snap-item { flex: 1; padding: 0 10px; border-right: 1px solid rgba(255,255,255,0.18); }
+  .snap-item:last-child { border-right: none; }
+  .snap-lbl { font-size: 0.55rem; color: #ECAA27; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 700; }
+  .snap-val { font-size: 0.68rem; color: #fff; line-height: 1.3; margin-top: 1px; }
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .four-col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 6px; }
+  .col-panel { background: #fff; border: 1px solid rgba(17,17,17,0.12); overflow: hidden; }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+  .data-table th { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; background: #111111; color: #ECAA27; padding: 3px 8px; text-align: left; }
+  .data-table td { padding: 2px 6px; border-bottom: 1px solid rgba(17,17,17,0.1); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table .total-row td { background: #111111; color: #ECAA27; font-weight: 700; font-size: 0.68rem; }
+  .badge-none { background: #8a0a0a; color: #fff; font-size: 0.55rem; padding: 1px 5px; font-weight: 700; letter-spacing: 0.06em; }
+  .phase-card { background: #111111; color: #fff; padding: 5px 10px; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); }
+  .phase-num { font-size: 0.6rem; color: #ECAA27; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+  .phase-title { font-size: 0.85rem; font-weight: 900; color: #fff; line-height: 1.1; margin: 2px 0; }
+  .phase-date { font-size: 0.6rem; color: #ECAA27; margin-bottom: 3px; }
+  .phase-bullets { list-style: none; padding: 0; }
+  .phase-bullets li { font-size: 0.65rem; color: rgba(255,255,255,0.8); padding: 1px 0 1px 10px; position: relative; }
+  .phase-bullets li::before { content: '›'; position: absolute; left: 0; color: #ECAA27; }
+  .metric-box { background: #f5f0e8; border: 2px solid #111111; text-align: center; padding: 6px; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); }
+  .metric-val { font-size: 1.1rem; font-weight: 900; color: #ECAA27; line-height: 1; text-shadow: 1px 1px 0 #111111; }
+  .metric-lbl { font-size: 0.58rem; color: #111111; text-transform: uppercase; letter-spacing: 0.08em; margin-top: 2px; }
+  .target-card { background: #fff; border: 1px solid rgba(17,17,17,0.15); border-top: 3px solid #111111; padding: 3px 8px; }
+  .target-title { font-size: 0.68rem; font-weight: 900; color: #111111; text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 2px; }
+  .target-bullets { list-style: none; padding: 0; }
+  .target-bullets li { font-size: 0.65rem; color: #444444; padding: 1px 0 1px 9px; position: relative; }
+  .target-bullets li::before { content: '▸'; position: absolute; left: 0; color: #ECAA27; font-size: 0.55rem; }
+  .closing-box { background: #111111; color: #fff; padding: 6px 14px; margin-top: 4px; clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%); }
+  .closing-title { font-size: 0.72rem; font-weight: 900; color: #ECAA27; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 2px; }
+  .closing-box p { font-size: 0.7rem; color: rgba(255,255,255,0.9); line-height: 1.35; margin-bottom: 2px; }
+  .closing-box strong { color: #ECAA27; }
+  .closing-contact { font-size: 0.63rem; color: rgba(255,255,255,0.6); margin-top: 3px; }
+  .section-wrap { margin-bottom: 4px; }
+  @media print {
+    @page { size: letter portrait; margin: 0.15in 0.25in; }
+    body { background: none; }
+    .page { box-shadow: none; margin: 0; width: 100%; }
+    .page-inner { padding: 6px 10px; }
+    .no-print { display: none !important; }
+  }
+"""
+
+
+def build_overview(agency, n):
+    name = agency.get('name') or 'Agency'
+    city = agency.get('city') or 'Maryland'
+    atype = agency.get('type') or 'Home Health Agency'
+
+    return f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Digital Presence Overview &mdash; {name}</title>
+<style>{OVERVIEW_CSS}</style>
+</head>
+<body>
+<div class="page">
+  <div class="top-stripe"></div>
+  <div class="page-inner">
+
+    <div class="no-print">
+      <button class="print-btn" onclick="window.print()">Print / Export PDF</button>
+    </div>
+
+    <div class="ovr-header">
+      <div class="ovr-header-left">
+        <h1>DIGITAL PRESENCE PACKAGE <span>|</span> {name}</h1>
+        <div class="ovr-sub">{city}, Maryland &nbsp;&middot;&nbsp; Digitalization Outreach Overview</div>
+      </div>
+      <div class="ovr-header-right">
+        <img src="/static/logo.png" alt="Proles Home Healthcare Consultants">
+        <div class="ovr-meta">Executive Overview &nbsp;&middot;&nbsp; May 2026 &nbsp;&middot;&nbsp; Confidential</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-val">65%</div>
+        <div class="stat-lbl">Families Search Online Before Choosing a Provider</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">3 Wks</div>
+        <div class="stat-lbl">Average Time to Launch</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">50+</div>
+        <div class="stat-lbl">MD Agencies Ready to Compete Online</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-val">$1,800</div>
+        <div class="stat-lbl">Total Investment &mdash; All-In</div>
+      </div>
+    </div>
+
+    <div class="snapshot-bar">
+      <div class="snap-item">
+        <div class="snap-lbl">Agency</div>
+        <div class="snap-val">{name}</div>
+      </div>
+      <div class="snap-item">
+        <div class="snap-lbl">Location</div>
+        <div class="snap-val">{city}, Maryland</div>
+      </div>
+      <div class="snap-item">
+        <div class="snap-lbl">Type</div>
+        <div class="snap-val">{atype}</div>
+      </div>
+      <div class="snap-item" style="flex:2;">
+        <div class="snap-lbl">Service</div>
+        <div class="snap-val">Digital Presence Package &mdash; Website + SEO + Staff Portal</div>
+      </div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-label">Current Capability Gaps &amp; Cost of Inaction</div>
+      <div class="two-col">
+        <div class="col-panel">
+          <table class="data-table">
+            <thead><tr><th>Capability</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td>Professional Website</td><td><span class="badge-none">NONE</span></td></tr>
+              <tr><td>Local SEO (Google)</td><td><span class="badge-none">NONE</span></td></tr>
+              <tr><td>Staff / Employee Portal</td><td><span class="badge-none">NONE</span></td></tr>
+              <tr><td>Online Contact &amp; Booking</td><td><span class="badge-none">NONE</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-panel">
+          <table class="data-table">
+            <thead><tr><th>Cost of Inaction</th><th style="text-align:right;">Per Year</th></tr></thead>
+            <tbody>
+              <tr><td>Families finding competitor online</td><td style="text-align:right;">~$24,000</td></tr>
+              <tr><td>Lost referral partner trust</td><td style="text-align:right;">~$18,000</td></tr>
+              <tr><td>Manual phone inquiry overhead</td><td style="text-align:right;">~$8,000</td></tr>
+              <tr><td>No after-hours client capture</td><td style="text-align:right;">~$12,000</td></tr>
+              <tr class="total-row"><td>TOTAL ANNUAL EXPOSURE</td><td style="text-align:right;">~$62,000/yr</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-label">3-Phase Delivery Plan</div>
+      <div class="three-col">
+        <div class="phase-card">
+          <div class="phase-num">Phase 01</div>
+          <div class="phase-title">Audit &amp; Brand</div>
+          <div class="phase-date">Weeks 1&ndash;2</div>
+          <ul class="phase-bullets">
+            <li>Discovery call &amp; readiness audit</li>
+            <li>Brand identity &amp; color system</li>
+            <li>Site architecture &amp; content plan</li>
+            <li>Domain &amp; hosting setup</li>
+          </ul>
+        </div>
+        <div class="phase-card">
+          <div class="phase-num">Phase 02</div>
+          <div class="phase-title">Build &amp; Launch</div>
+          <div class="phase-date">Weeks 2&ndash;4</div>
+          <ul class="phase-bullets">
+            <li>Mobile-first website</li>
+            <li>Staff &amp; employee portal</li>
+            <li>Appointment &amp; contact forms</li>
+            <li>Live deployment &amp; QA</li>
+          </ul>
+        </div>
+        <div class="phase-card" style="background:#8a0a0a;">
+          <div class="phase-num">Phase 03</div>
+          <div class="phase-title">SEO &amp; Optimize</div>
+          <div class="phase-date">Days 30&ndash;60</div>
+          <ul class="phase-bullets">
+            <li>Google Business Profile setup</li>
+            <li>Local keyword targeting for {city}</li>
+            <li>On-page metadata &amp; schema</li>
+            <li>GA4 analytics &amp; monthly report</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-label">Financial Summary</div>
+      <div class="two-col">
+        <div class="col-panel">
+          <table class="data-table">
+            <thead><tr><th>Investment Breakdown</th><th style="text-align:right;">Amount</th></tr></thead>
+            <tbody>
+              <tr><td>Website Design &amp; Development</td><td style="text-align:right;">$1,200</td></tr>
+              <tr><td>Staff / Employee Portal</td><td style="text-align:right;">$400</td></tr>
+              <tr><td>Local SEO Setup</td><td style="text-align:right;">$200</td></tr>
+              <tr class="total-row"><td>TOTAL INVESTMENT</td><td style="text-align:right;">$1,800</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-panel">
+          <table class="data-table">
+            <thead><tr><th>Year 1 Return Estimate</th><th style="text-align:right;">Value</th></tr></thead>
+            <tbody>
+              <tr><td>New clients via search (est. 3&ndash;5)</td><td style="text-align:right;">+$8,400</td></tr>
+              <tr><td>Referral partner credibility</td><td style="text-align:right;">+$3,600</td></tr>
+              <tr><td>Reduced phone inquiry overhead</td><td style="text-align:right;">+$1,200</td></tr>
+              <tr class="total-row"><td>TOTAL YEAR 1 RETURN</td><td style="text-align:right;">+$13,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="four-col section-wrap">
+      <div class="metric-box">
+        <div class="metric-val">7.3&times;</div>
+        <div class="metric-lbl">ROI &mdash; Year 1</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">3 Wks</div>
+        <div class="metric-lbl">Time to Launch</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">60 Days</div>
+        <div class="metric-lbl">SEO Ranking Window</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-val">$11,400</div>
+        <div class="metric-lbl">Net Year 1 Benefit</div>
+      </div>
+    </div>
+
+    <div class="section-wrap">
+      <div class="section-label">Success Targets &mdash; 90 Days Post-Launch</div>
+      <div class="three-col">
+        <div class="target-card">
+          <div class="target-title">Website</div>
+          <ul class="target-bullets">
+            <li>500+ visitors / month</li>
+            <li>80%+ mobile traffic</li>
+            <li>50+ contact form submissions / month</li>
+          </ul>
+        </div>
+        <div class="target-card">
+          <div class="target-title">Local SEO &mdash; {city}</div>
+          <ul class="target-bullets">
+            <li>Top 10 Google for &ldquo;{city} home health&rdquo;</li>
+            <li>Google Business Profile live &amp; verified</li>
+            <li>100+ monthly local search impressions</li>
+          </ul>
+        </div>
+        <div class="target-card">
+          <div class="target-title">Client Growth</div>
+          <ul class="target-bullets">
+            <li>3&ndash;5 new clients from search (Year 1)</li>
+            <li>24-hour inquiry response standard</li>
+            <li>Referral partner onboarding (Year 1)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="closing-box">
+      <div class="closing-title">Recommendation</div>
+      <p>Authorize the Digital Presence Package for <strong>{name}</strong>. Schedule your free 15-minute discovery call to begin. Launch within 3 weeks of kickoff.</p>
+      <p>Investment: <strong>$1,800 total</strong> &nbsp;&middot;&nbsp; Estimated Year 1 Return: <strong>$13,200</strong> &nbsp;&middot;&nbsp; Net Year 1 Benefit: <strong>$11,400</strong></p>
+      <div class="closing-contact">amthuku@gmail.com &nbsp;&middot;&nbsp; (434) 429-9296 &nbsp;&middot;&nbsp; Alexander Thuku &nbsp;&middot;&nbsp; Proles Home Healthcare Consultants</div>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>"""
 
 
 # ── Proposal HTML ─────────────────────────────────────────────────────────────
@@ -2050,6 +2383,15 @@ def confirm_booking():
                 print(f'[prospect email] {e}')
 
     return jsonify({'success': True, 'meet_link': meet_link})
+
+
+@app.route('/overview/<int:row_num>')
+def overview_page(row_num):
+    agencies = load_agencies()
+    agency = agencies.get(row_num)
+    if not agency:
+        abort(404)
+    return Response(build_overview(agency, row_num), mimetype='text/html')
 
 
 @app.route('/demo/<int:row_num>')
