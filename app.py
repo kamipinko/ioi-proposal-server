@@ -2257,6 +2257,190 @@ async function submitBooking() {{
     return Response(html, mimetype='text/html')
 
 
+@app.route('/book/consult')
+def book_consult():
+    import json as _json, hashlib
+
+    name = 'Proles Consulting'
+
+    days = _get_weekdays(14)
+    date_options_html = '<option value="">-- Select a date --</option>'
+    month_names = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+    dow_names   = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    for d in days:
+        dow   = dow_names[d.weekday()]
+        mon   = month_names[d.month - 1]
+        label = f"{dow}, {mon} {d.day}"
+        date_options_html += f'<option value="{d.isoformat()}">{label}</option>'
+
+    slot_labels = _slot_labels()
+    busy_map = {}
+    for d in days:
+        h = int(hashlib.md5(d.isoformat().encode()).hexdigest()[:8], 16)
+        busy = []
+        for i in range(len(slot_labels)):
+            h = (h * 1664525 + 1013904223) & 0xFFFFFFFF
+            if i >= 2 and i <= len(slot_labels) - 3 and (h % 100) < 45:
+                busy.append(i)
+        busy_map[d.isoformat()] = busy
+
+    slot_labels_json = _json.dumps(slot_labels)
+    busy_map_json    = _json.dumps(busy_map)
+    name_json        = _json.dumps(name)
+
+    html = f"""<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Schedule a Consultation &mdash; Proles Consulting</title>
+<style>{BOOK_CSS}</style>
+</head>
+<body>
+<div class="card" id="bookCard">
+  <div class="card-eyebrow">Proles Consulting</div>
+  <div class="card-title">Book a <span>15-Min</span> Call</div>
+  <div class="card-sub">Free Discovery Consultation</div>
+  <div class="divider"></div>
+
+  <div class="field-row three">
+    <div>
+      <label class="field-label">Name</label>
+      <input type="text" id="inp-name" placeholder="Jane Smith">
+    </div>
+    <div>
+      <label class="field-label">Email</label>
+      <input type="email" id="inp-email" placeholder="jane@company.com">
+    </div>
+    <div>
+      <label class="field-label">Phone</label>
+      <input type="tel" id="inp-phone" placeholder="(410) 555-0100">
+    </div>
+  </div>
+
+  <label class="field-label" style="margin-bottom:8px;">How You'd Like to Meet</label>
+  <div class="meet-row" style="margin-bottom:20px;">
+    <div class="meet-pill active" id="pill-meet" onclick="setMeet('Google Meet')">&#127760; Google Meet</div>
+    <div class="meet-pill"        id="pill-zoom" onclick="setMeet('Zoom')">&#128249; Zoom</div>
+  </div>
+
+  <div class="field-row" style="margin-bottom:14px;">
+    <div>
+      <label class="field-label">Select a Date</label>
+      <select id="date-sel" onchange="onDateChange(this.value)">
+        {date_options_html}
+      </select>
+    </div>
+  </div>
+
+  <div class="slot-row" id="slot-row" style="display:none;margin-bottom:20px;">
+    <label class="field-label">Select a Time</label>
+    <select id="time-sel" onchange="onTimeChange()">
+      <option value="">-- Select a time --</option>
+    </select>
+  </div>
+
+  <button class="submit-btn" id="submit-btn" disabled onclick="submitBooking()">
+    Confirm Booking
+  </button>
+
+  <div class="success-card" id="success-card">
+    <div class="success-icon">&#10003;</div>
+    <h2>You're Booked!</h2>
+    <p id="success-detail"></p>
+    <p style="margin-top:10px;">We'll send confirmation to your email.</p>
+  </div>
+</div>
+
+<script>
+const SLOT_LABELS  = {slot_labels_json};
+const BUSY_MAP     = {busy_map_json};
+let selectedMeet   = 'Google Meet';
+let selectedDate   = null;
+let selectedTime   = null;
+
+function setMeet(t) {{
+  selectedMeet = t;
+  document.getElementById('pill-meet').classList.toggle('active', t === 'Google Meet');
+  document.getElementById('pill-zoom').classList.toggle('active', t === 'Zoom');
+}}
+
+function onDateChange(iso) {{
+  selectedDate = iso || null;
+  selectedTime = null;
+  const row  = document.getElementById('slot-row');
+  const sel  = document.getElementById('time-sel');
+  if (!iso) {{ row.style.display = 'none'; checkSubmit(); return; }}
+  const busy = new Set(BUSY_MAP[iso] || []);
+  sel.innerHTML = '<option value="">-- Select a time --</option>';
+  SLOT_LABELS.forEach(function(lbl, i) {{
+    const opt = document.createElement('option');
+    opt.value = lbl;
+    if (busy.has(i)) {{
+      opt.disabled = true;
+      opt.textContent = lbl + '  (Unavailable)';
+      opt.className = 'unavailable';
+    }} else {{
+      opt.textContent = lbl;
+    }}
+    sel.appendChild(opt);
+  }});
+  row.style.display = '';
+  checkSubmit();
+}}
+
+function onTimeChange() {{
+  selectedTime = document.getElementById('time-sel').value || null;
+  checkSubmit();
+}}
+
+function checkSubmit() {{
+  const ok = !!(selectedDate && selectedTime &&
+    document.getElementById('inp-name').value.trim() &&
+    document.getElementById('inp-email').value.trim());
+  document.getElementById('submit-btn').disabled = !ok;
+}}
+
+document.addEventListener('input', function(e) {{
+  if (['inp-name','inp-email'].includes(e.target.id)) checkSubmit();
+}});
+
+async function submitBooking() {{
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true; btn.textContent = 'Confirming...';
+  const payload = {{
+    agency_num: 'consult',
+    agency_name: {name_json},
+    contact_name:  document.getElementById('inp-name').value.trim(),
+    contact_email: document.getElementById('inp-email').value.trim(),
+    contact_phone: document.getElementById('inp-phone').value.trim(),
+    meeting_type:  selectedMeet,
+    date: selectedDate,
+    time: selectedTime
+  }};
+  try {{
+    await fetch('/book-confirm', {{
+      method:'POST', headers:{{'Content-Type':'application/json'}},
+      body: JSON.stringify(payload)
+    }});
+  }} catch(e) {{}}
+  document.getElementById('bookCard').querySelector('.card-eyebrow').style.display = 'none';
+  document.getElementById('bookCard').querySelector('.card-title').style.display   = 'none';
+  document.getElementById('bookCard').querySelector('.card-sub').style.display     = 'none';
+  document.getElementById('bookCard').querySelector('.divider').style.display      = 'none';
+  document.querySelectorAll('.field-row, .meet-row, .slot-row, #submit-btn, .field-label').forEach(function(el) {{
+    el.style.display = 'none';
+  }});
+  const s = document.getElementById('success-card');
+  s.style.display = 'block';
+  document.getElementById('success-detail').textContent =
+    payload.contact_name + ' · ' + payload.date + ' at ' + payload.time + ' · ' + payload.meeting_type;
+}}
+</script>
+</body>
+</html>"""
+    return html
+
 @app.route('/book-confirm', methods=['POST'])
 def book_confirm():
     data = request.get_json(silent=True) or {}
