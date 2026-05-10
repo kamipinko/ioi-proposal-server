@@ -5,11 +5,12 @@ import base64
 import urllib.parse
 import datetime
 import tempfile
+import hashlib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
-from flask import Flask, Response, abort, request, jsonify
+from flask import Flask, Response, abort, redirect, request, jsonify
 
 app = Flask(__name__)
 
@@ -24,6 +25,14 @@ GMAIL_USER = os.environ.get('GMAIL_USER', 'amthuku@gmail.com')
 RAILWAY_URL = 'https://ioi-proposal-server-production.up.railway.app'
 EXAMPLE_DISPLAY = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
 EXAMPLE_HREF = 'https://delightful-glacier-0971dfb0f.1.azurestaticapps.net'
+
+
+def agency_token(n):
+    return hashlib.md5(f"proles-ioi-{n}-secret".encode()).hexdigest()[:8]
+
+
+def demo_url(n):
+    return f"{RAILWAY_URL}/site/{agency_token(n)}"
 
 
 def _load_ioi_template(filename):
@@ -602,7 +611,7 @@ def build_email_html(agency, n):
     </ul>
 
     <p style="margin-bottom:16px;">We built a personalized demo site just for <strong>{name}</strong>. See it live:
-    <a href="{RAILWAY_URL}/demo/{n}" style="color:#8a0a0a;font-weight:bold;">{RAILWAY_URL}/demo/{n}</a> &mdash;
+    <a href="{demo_url(n)}" style="color:#8a0a0a;font-weight:bold;">{demo_url(n)}</a> &mdash;
     a branded homepage, service pages, and contact forms &mdash; exactly what your agency&rsquo;s site will look like.</p>
 
     <p style="margin-bottom:16px;">Beyond the website itself, every site we build includes <strong>local SEO setup</strong> &mdash; Google Business Profile configuration, location-based keyword targeting for {city}, and on-page metadata &mdash; so families in your area can find you when they search. Most agencies without a web presence are losing clients to competitors simply because they can&rsquo;t be found online.</p>
@@ -683,7 +692,7 @@ def build_email_text(agency, n):
         f"  • A professional, branded website — mobile-friendly and fast\n"
         f"  • Staff & employee portal — internal tools your team can use\n"
         f"  • Appointment & contact forms — so families can reach you directly\n\n"
-        f"See your personalized demo site: {RAILWAY_URL}/demo/{n}\n\n"
+        f"See your personalized demo site: {demo_url(n)}\n\n"
         f"Beyond the website itself, every site we build includes local SEO setup — Google Business Profile configuration, location-based keyword targeting for your area, and on-page metadata — so families can find you when they search online.\n\n"
         f"See the attached one-page proposal PDF for full details and pricing.\n\n"
         f"Schedule a free 15-minute call: {book_url}\n\n"
@@ -1102,7 +1111,7 @@ def build_proposal(agency, n):
     <div>
       <div class="section-label label-gold">Your Demo Site</div>
       <div class="example-box">
-        <a class="example-url" href="{RAILWAY_URL}/demo/{n}" target="_blank">{RAILWAY_URL}/demo/{n}</a>
+        <a class="example-url" href="{demo_url(n)}" target="_blank">{demo_url(n)}</a>
         <div class="example-desc">
           This personalized demo was built specifically for <strong style="color:#ECAA27">{name}</strong> &mdash; a branded homepage, service pages, and contact forms. Exactly what your live site will look like.
         </div>
@@ -2695,13 +2704,21 @@ def overview_page(row_num):
     return Response(build_overview(agency, row_num), mimetype='text/html')
 
 
+@app.route('/site/<token>')
+def demo_site_token(token):
+    agencies = load_agencies()
+    for n in range(1, 51):
+        if agency_token(n) == token:
+            agency = agencies.get(n)
+            if not agency:
+                break
+            return Response(build_demo(agency, n), mimetype='text/html')
+    abort(404)
+
+
 @app.route('/demo/<int:row_num>')
 def demo_site(row_num):
-    agencies = load_agencies()
-    agency = agencies.get(row_num)
-    if not agency:
-        abort(404)
-    return Response(build_demo(agency, row_num), mimetype='text/html')
+    return redirect(demo_url(row_num), code=302)
 
 
 @app.route('/client-site/style.css')
