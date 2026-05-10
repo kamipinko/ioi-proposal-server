@@ -2009,11 +2009,11 @@ def generate_draft(row_num):
     pdf_bytes = None
     try:
         from weasyprint import HTML, CSS
-        print(f'[pdf] building HTML for {name}...')
-        proposal_html = build_proposal_for_pdf(agency, row_num)
-        print(f'[pdf] HTML len={len(proposal_html)}, calling WeasyPrint...')
-        pdf_bytes = HTML(string=proposal_html, base_url=None).write_pdf(
-            stylesheets=[CSS(string='@page { size: Letter; margin: 0.5in 0.6in; }')]
+        print(f'[pdf] building overview HTML for {name}...')
+        overview_html = build_overview(agency, row_num)
+        print(f'[pdf] HTML len={len(overview_html)}, calling WeasyPrint...')
+        pdf_bytes = HTML(string=overview_html, base_url=None).write_pdf(
+            stylesheets=[CSS(string='@page { size: Letter; margin: 0.4in 0.5in; }')]
         )
         print(f'[pdf] done, size={len(pdf_bytes)} bytes')
     except Exception as e:
@@ -2046,7 +2046,7 @@ def generate_draft(row_num):
         pdf_part.set_payload(pdf_bytes)
         encoders.encode_base64(pdf_part)
         safe_name = slugify(name)
-        pdf_part.add_header('Content-Disposition', 'attachment', filename=f'{safe_name}_proposal.pdf')
+        pdf_part.add_header('Content-Disposition', 'attachment', filename=f'{safe_name}_overview.pdf')
         msg.attach(pdf_part)
 
     raw = base64.urlsafe_b64encode(msg.as_bytes()).decode()
