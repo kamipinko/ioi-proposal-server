@@ -1285,40 +1285,52 @@ def build_demo(agency, n):
     city     = agency.get('city')  or 'Maryland'
     phone    = agency.get('phone') or ''
     email    = agency.get('email') or ''
-    phrase   = type_phrase(atype)
     services = demo_services(atype)
 
     t = atype.lower()
     if 'home health' in t:
-        svc_type     = 'home health'
+        tagline  = 'Compassionate Home Health Services'
+        hero_sub = (
+            f'We provide skilled nursing, therapy, and personal care directly to our clients '
+            f'across {city} and surrounding Maryland communities — helping people heal at home.'
+        )
         mission_text = (
             f'At {name}, we believe that healing happens best at home. Our licensed clinicians and '
             f'compassionate home health aides deliver skilled nursing, therapy, and personal care '
             f'directly to our clients across {city} and surrounding Maryland communities. '
-            f'We build individualized care plans that treat the whole person &mdash; not just the diagnosis.'
+            f'We build individualized care plans that treat the whole person — not just the diagnosis.'
         )
         who_serve = [
-            ('Seniors &amp; Older Adults',           'Helping seniors maintain independence and dignity in their own homes.'),
-            ('Post-Surgical Patients',               'Supporting safe recovery after hospitalization or surgery.'),
-            ('Individuals with Chronic Conditions',  'Ongoing skilled care for diabetes, cardiac conditions, and more.'),
-            ('Families Seeking Respite',             'Professional home care that gives family caregivers a well-deserved break.'),
+            ('\U0001f464', 'Seniors &amp; Older Adults',          'Helping seniors maintain independence and dignity in their own homes.'),
+            ('\U0001f3e5', 'Post-Surgical Patients',              'Supporting safe recovery after hospitalization or surgery.'),
+            ('\U0001f48a', 'Chronic Condition Clients',           'Ongoing skilled care for diabetes, cardiac conditions, and more.'),
+            ('\U0001f932', 'Families Seeking Respite',            'Professional home care that gives family caregivers a well-deserved break.'),
         ]
     elif 'dda' in t or 'residential' in t or 'rsa' in t:
-        svc_type     = 'residential care'
+        tagline  = 'Person-Centered Disability Support'
+        hero_sub = (
+            f'We help individuals with developmental disabilities live full, self-directed lives '
+            f'in {city} and the surrounding Maryland communities through certified support and residential care.'
+        )
         mission_text = (
             f'At {name}, we are committed to helping individuals with developmental disabilities '
             f'live full, self-directed lives in their communities. Our certified support staff provide '
             f'residential care, skills training, and community integration services tailored to each '
-            f"person&rsquo;s unique goals and needs across {city}, Maryland."
+            f"person’s unique goals and needs across {city}, Maryland."
         )
         who_serve = [
-            ('Individuals with Developmental Disabilities', 'Person-centered support for adults with intellectual and developmental disabilities.'),
-            ('Families Seeking Supported Living',           'Residential and in-home supports that keep families informed and involved.'),
-            ('Those Transitioning from Institutional Care', 'Community-based alternatives for individuals moving from group homes or facilities.'),
-            ('Youth &amp; Young Adults',                    'Early intervention and skills-building for youth with autism and intellectual disabilities.'),
+            ('\U0001f464', 'Individuals with Developmental Disabilities', 'Person-centered support for adults with intellectual and developmental disabilities.'),
+            ('\U0001f46a', 'Families Seeking Supported Living',           'Residential and in-home supports that keep families informed and involved.'),
+            ('\U0001f3e5', 'Transitioning from Institutional Care',       'Community-based alternatives for individuals moving from group homes or facilities.'),
+            ('\U0001f331', 'Youth &amp; Young Adults',                    'Early intervention and skills-building for youth with autism and intellectual disabilities.'),
         ]
     elif 'day care' in t or 'adult day' in t or 'adult medical' in t:
-        svc_type     = 'adult day care'
+        tagline  = 'Licensed Adult Day Care Services'
+        hero_sub = (
+            f'We provide a warm, structured daytime environment for adults in {city} who need '
+            f'supervision, socialization, and skilled care — supporting independence while giving '
+            f'family caregivers peace of mind.'
+        )
         mission_text = (
             f'At {name}, we provide a warm, structured daytime environment for adults who need '
             f'supervision, socialization, and skilled care. Our licensed adult day programs in {city} '
@@ -1326,326 +1338,388 @@ def build_demo(agency, n):
             f'respite they need to thrive.'
         )
         who_serve = [
-            ('Seniors with Memory Conditions',   "Safe, structured programming for individuals with dementia and Alzheimer&rsquo;s."),
-            ('Adults with Physical Disabilities', 'Accessible day programs with therapy, activities, and skilled nursing.'),
-            ('Caregivers Needing Daily Respite',  'Reliable daytime care so family members can work and recharge.'),
-            ('Individuals Seeking Engagement',    'Community connection and meaningful activities for isolated adults.'),
+            ('\U0001f9e0', 'Seniors with Memory Conditions',  "Safe, structured programming for individuals with dementia and Alzheimer’s."),
+            ('\U0001f91d', 'Adults with Physical Disabilities', 'Accessible day programs with therapy, activities, and skilled nursing.'),
+            ('\U0001f932', 'Caregivers Needing Daily Respite', 'Reliable daytime care so family members can work and recharge.'),
+            ('\U0001f4ac', 'Individuals Seeking Engagement',   'Community connection and meaningful activities for isolated adults.'),
         ]
     else:
-        svc_type     = 'care'
+        tagline  = 'Professional Care &amp; Support Services'
+        hero_sub = (
+            f'We provide exceptional, compassionate care that empowers every client to live with '
+            f'dignity, independence, and purpose — serving {city} and the surrounding Maryland area.'
+        )
         mission_text = (
             f'At {name}, our mission is simple: provide exceptional, compassionate care that empowers '
             f'every client to live with dignity, independence, and purpose. Serving {city} and the '
             f'surrounding Maryland area, we offer a full continuum of care services coordinated around '
-            f"each individual&rsquo;s unique needs and goals."
+            f"each individual’s unique needs and goals."
         )
         who_serve = [
-            ('Older Adults &amp; Seniors',           'Personalized care and support to help seniors remain in their communities.'),
-            ('Individuals with Disabilities',        'Tailored support services for adults with physical and cognitive disabilities.'),
-            ('Post-Hospitalization Clients',         'Transitional care and home support after hospital discharge.'),
-            ('Families Seeking Care Coordination',   'Connecting families to the right services and community resources.'),
+            ('\U0001f464', 'Older Adults &amp; Seniors',         'Personalized care and support to help seniors remain in their communities.'),
+            ('\U0001f91d', 'Individuals with Disabilities',       'Tailored support services for adults with physical and cognitive disabilities.'),
+            ('\U0001f3e5', 'Post-Hospitalization Clients',        'Transitional care and home support after hospital discharge.'),
+            ('\U0001f46a', 'Families',                            'Connecting families to the right services and community resources.'),
         ]
 
-    # Service cards
+    # Service cards (IOI card style)
+    svc_icons = ['\U0001f9e0', '\U0001f4ac', '\U0001f331', '\U0001f91d']
     cards_html = ''
     for idx, (svc_name, svc_desc) in enumerate(services):
-        num_str = f'0{idx + 1}'
+        icon = svc_icons[idx % len(svc_icons)]
         cards_html += (
-            f'<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:32px;">'
-            f'<div style="font-size:13px;font-weight:900;color:#ECAA27;letter-spacing:3px;margin-bottom:14px;'
-            f"font-family:'Arial Black',Arial,sans-serif;\">{num_str}</div>"
-            f'<div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:10px;'
-            f"font-family:'Arial Black',Arial,sans-serif;\">{svc_name}</div>"
-            f'<div style="font-size:14px;color:#888888;line-height:1.7;">{svc_desc}</div>'
-            f'</div>'
+            f'<div class="card">'
+            f'<span class="card-icon" aria-hidden="true">{icon}</span>'
+            f'<h3>{svc_name}</h3>'
+            f'<p>{svc_desc}</p>'
+            f'</div>\n'
         )
 
-    # Who we serve cards
+    # Who we serve (IOI values-grid style)
     who_html = ''
-    for (group, desc) in who_serve:
+    for (icon, group, desc) in who_serve:
         who_html += (
-            f'<div style="background:#1a1a1a;border:1px solid #2a2a2a;border-left:4px solid #ECAA27;padding:24px 28px;">'
-            f'<div style="font-size:16px;font-weight:900;color:#f5f0e8;margin-bottom:8px;'
-            f"font-family:'Arial Black',Arial,sans-serif;\">{group}</div>"
-            f'<div style="font-size:14px;color:#888888;line-height:1.6;">{desc}</div>'
-            f'</div>'
+            f'<div class="value-item">'
+            f'<span class="value-icon" aria-hidden="true">{icon}</span>'
+            f'<h3>{group}</h3>'
+            f'<p>{desc}</p>'
+            f'</div>\n'
         )
 
-    # Phone + email
-    phone_html = ''
+    # Contact details for dark navy CTA band
+    contact_items = ''
     if phone and phone != '—':
-        phone_html = (
-            f'<div style="font-size:40px;font-weight:900;color:#ECAA27;margin:20px 0;'
-            f"letter-spacing:1px;font-family:'Arial Black',Arial,sans-serif;\">{phone}</div>"
+        phone_digits = re.sub(r'\D', '', phone)
+        tel_href = f'tel:+1{phone_digits[-10:]}' if len(phone_digits) >= 10 else '#'
+        contact_items += (
+            f'<a href="{tel_href}" style="color:#fff;font-family:\'Playfair Display\',Georgia,serif;'
+            f'font-size:2rem;font-weight:900;text-decoration:none;display:block;margin-bottom:0.5rem;">{phone}</a>'
         )
-    email_html = ''
     if email and email != '—':
-        email_html = (
-            f'<div style="font-size:15px;color:#888888;margin-bottom:8px;">'
-            f'<a href="mailto:{email}" style="color:#ECAA27;text-decoration:none;">{email}</a>'
-            f'</div>'
+        contact_items += (
+            f'<a href="mailto:{email}" style="color:#1ABC9C;font-size:1rem;text-decoration:none;'
+            f'display:block;font-family:\'Share Tech Mono\',monospace;letter-spacing:0.05em;">{email}</a>'
         )
 
-    accent_bar = '<div style="height:4px;background:linear-gradient(90deg,#8a0a0a,#ECAA27);"></div>'
-    name_upper = name.upper()
-    phrase_clean = phrase.rstrip(',')
+    # Footer contact list items
+    footer_phone = (
+        f'<li><a href="#" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.88rem;">{phone}</a></li>'
+        if phone and phone != '—' else ''
+    )
+    footer_email = (
+        f'<li><a href="mailto:{email}" style="color:rgba(255,255,255,0.65);text-decoration:none;font-size:0.88rem;">{email}</a></li>'
+        if email and email != '—' else ''
+    )
+
+    RAILWAY_URL_local = RAILWAY_URL  # use the module-level constant
 
     return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{name} &mdash; Professional {svc_type.title()} Services</title>
+<title>{name} — {tagline}</title>
+<meta name="description" content="{name} provides compassionate care and support services in {city}, Maryland.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@400;700;900&family=Share+Tech+Mono&display=swap">
 <style>
-* {{ box-sizing: border-box; margin: 0; padding: 0; }}
-body {{ font-family: Arial, Helvetica, sans-serif; background: #111111; color: #f5f0e8; }}
-a {{ text-decoration: none; }}
-html {{ scroll-behavior: smooth; }}
+:root {{
+  --navy:        #1B4F72;
+  --navy-dark:   #102B40;
+  --teal:        #148F77;
+  --teal-light:  #1ABC9C;
+  --amber:       #D4820A;
+  --amber-bright:#F39C12;
+  --white:       #FFFFFF;
+  --off-white:   #F4F7F8;
+  --gray-light:  #DDE4E8;
+  --gray-mid:    #7F96A4;
+  --gray-dark:   #4A6070;
+  --text:        #0D1F2D;
+  --font-display:'Playfair Display', Georgia, serif;
+  --font-body:   'Lato', Arial, sans-serif;
+  --font-mono:   'Share Tech Mono', 'Courier New', monospace;
+  --max-width:   1100px;
+  --section-pad: 80px 24px;
+}}
+*, *::before, *::after {{ box-sizing: border-box; margin: 0; padding: 0; }}
+html {{ scroll-behavior: smooth; font-size: 16px; }}
+body {{ font-family: var(--font-body); color: var(--text); background: var(--white); line-height: 1.7; -webkit-font-smoothing: antialiased; overflow-x: hidden; padding-top: 36px; }}
+img {{ max-width: 100%; height: auto; display: block; }}
+a {{ color: var(--teal); text-decoration: underline; }}
+a:hover {{ color: var(--teal-light); }}
+h1, h2, h3, h4 {{ font-family: var(--font-display); color: var(--navy); line-height: 1.15; font-weight: 900; text-transform: uppercase; letter-spacing: -0.01em; }}
+h1 {{ font-size: clamp(2.2rem, 6vw, 3.6rem); }}
+h2 {{ font-size: clamp(1.7rem, 4vw, 2.6rem); }}
+h3 {{ font-size: clamp(1.05rem, 2.5vw, 1.35rem); }}
+p {{ margin-bottom: 1rem; max-width: 68ch; }}
+p:last-child {{ margin-bottom: 0; }}
+.container {{ max-width: var(--max-width); margin: 0 auto; padding: 0 24px; }}
+section {{ padding: var(--section-pad); }}
+.section-label {{
+  font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.22em;
+  text-transform: uppercase; color: var(--amber); margin-bottom: 0.85rem;
+  display: flex; align-items: center; gap: 8px;
+}}
+.section-label::before {{
+  content: ''; display: inline-block; width: 24px; height: 2px;
+  background: var(--amber); flex-shrink: 0;
+}}
+.section-intro {{ font-size: 1.05rem; color: var(--gray-dark); margin-top: 0.75rem; margin-bottom: 2rem; max-width: 60ch; }}
+.btn {{
+  display: inline-block; padding: 14px 40px; font-family: var(--font-mono); font-size: 0.85rem;
+  letter-spacing: 0.12em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  border: none; clip-path: polygon(14px 0%, 100% 0%, calc(100% - 14px) 100%, 0% 100%);
+  transition: background 0.15s ease-out, transform 0.15s ease-out; white-space: nowrap;
+}}
+.btn:hover {{ transform: translateY(-2px) skewX(-1deg); }}
+.btn-primary {{ background: var(--amber); color: var(--white); }}
+.btn-primary:hover {{ background: var(--amber-bright); color: var(--white); }}
+.btn-secondary {{ background: transparent; color: var(--white); outline: 2px solid rgba(255,255,255,0.75); outline-offset: -2px; }}
+.btn-secondary:hover {{ background: rgba(255,255,255,0.12); color: var(--white); }}
+.demo-banner {{
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999; height: 36px;
+  background: var(--amber); color: var(--navy-dark);
+  font-family: var(--font-mono); font-size: 0.62rem; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  display: flex; align-items: center; justify-content: center;
+}}
+.demo-banner a {{ color: var(--navy-dark); text-decoration: none; font-weight: 900; }}
+.demo-banner a:hover {{ color: #fff; }}
+.site-header {{ background: var(--navy-dark); position: sticky; top: 36px; z-index: 100; border-bottom: 3px solid var(--teal); }}
+.nav-inner {{ max-width: var(--max-width); margin: 0 auto; padding: 0 24px; display: flex; align-items: center; justify-content: space-between; height: 66px; }}
+.nav-brand {{ text-decoration: none; display: flex; flex-direction: column; }}
+.nav-brand-name {{ font-family: var(--font-display); font-size: 1.05rem; font-weight: 900; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; line-height: 1.15; }}
+.nav-brand-tag {{ font-family: var(--font-mono); font-size: 0.58rem; color: var(--teal-light); letter-spacing: 0.14em; text-transform: uppercase; }}
+.nav-links {{ display: flex; list-style: none; padding: 0; margin: 0; gap: 2px; align-items: center; }}
+.nav-links a {{ color: rgba(255,255,255,0.80); text-decoration: none; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 8px 14px; position: relative; transition: color 0.15s ease-out; white-space: nowrap; }}
+.nav-links a::after {{ content: ''; position: absolute; bottom: 4px; left: 14px; right: 14px; height: 2px; background: var(--teal-light); transform: scaleX(0) skewX(-8deg); transform-origin: left; transition: transform 0.2s ease-out; }}
+.nav-links a:hover {{ color: var(--white); }}
+.nav-links a:hover::after {{ transform: scaleX(1) skewX(-8deg); }}
+.nav-cta a {{ background: var(--amber); color: var(--white) !important; clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%); padding: 8px 22px !important; transition: background 0.15s ease-out; }}
+.nav-cta a::after {{ display: none; }}
+.nav-cta a:hover {{ background: var(--amber-bright) !important; }}
+.hero {{ background: var(--navy-dark); padding: 100px 24px 130px; position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% 88%, 3% 100%); }}
+.hero::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: repeating-linear-gradient(-60deg, transparent, transparent 80px, rgba(20,143,119,0.04) 80px, rgba(20,143,119,0.04) 82px); pointer-events: none; animation: p5Flash 1.2s ease-out 0.15s both; }}
+.hero::after {{ content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: var(--teal); }}
+.hero-inner {{ max-width: var(--max-width); margin: 0 auto; position: relative; z-index: 1; }}
+.hero-eyebrow {{ font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.25em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; animation: heroSubSlideIn 0.5s ease-out 0.1s both; }}
+.hero-eyebrow::before {{ content: ''; display: inline-block; width: 36px; height: 2px; background: var(--teal-light); }}
+.hero h1 {{ color: var(--white); max-width: 800px; margin-bottom: 1.5rem; text-shadow: 3px 3px 0 rgba(20,143,119,0.25); animation: heroSlideIn 0.7s ease-out 0.2s both; }}
+.hero h1 em {{ font-style: normal; color: var(--amber-bright); }}
+.hero-sub {{ font-size: 1.05rem; color: rgba(255,255,255,0.80); max-width: 560px; margin-bottom: 2.5rem; border-left: 3px solid var(--teal); padding-left: 16px; animation: heroSubSlideIn 0.6s ease-out 0.45s both; }}
+.hero-actions {{ display: flex; gap: 20px; flex-wrap: wrap; align-items: center; animation: heroBtnsSlideIn 0.5s ease-out 0.65s both; }}
+@keyframes heroSlideIn {{ from {{ opacity:0;transform:translateX(-40px) skewX(-3deg); }} to {{ opacity:1;transform:translateX(0) skewX(0); }} }}
+@keyframes heroSubSlideIn {{ from {{ opacity:0;transform:translateX(-24px); }} to {{ opacity:1;transform:translateX(0); }} }}
+@keyframes heroBtnsSlideIn {{ from {{ opacity:0;transform:translateY(16px); }} to {{ opacity:1;transform:translateY(0); }} }}
+@keyframes p5Flash {{ 0% {{ opacity:0; }} 15% {{ opacity:0.18; }} 30% {{ opacity:0; }} 45% {{ opacity:0.08; }} 100% {{ opacity:0; }} }}
+.band-teal {{ background: var(--teal); color: var(--white); padding: var(--section-pad); position: relative; clip-path: polygon(0 0, 100% 8px, 100% 100%, 0 calc(100% - 8px)); }}
+.band-teal::before {{ content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--amber); }}
+.band-teal h2 {{ color: var(--white); }}
+.band-teal p {{ color: rgba(255,255,255,0.92); max-width: 72ch; }}
+.band-navy {{ background: var(--navy-dark); color: var(--white); padding: var(--section-pad); position: relative; clip-path: polygon(0 0, 100% 8px, 100% 100%, 0 calc(100% - 8px)); }}
+.band-navy::before {{ content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: var(--teal); }}
+.band-navy h2 {{ color: var(--white); }}
+.band-navy p {{ color: rgba(255,255,255,0.85); max-width: 68ch; }}
+.band-light {{ background: var(--off-white); padding: var(--section-pad); position: relative; }}
+.band-light::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--teal) 0%, var(--amber) 100%); }}
+.card-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }}
+.card {{ background: var(--white); padding: 36px 28px; border-left: 4px solid var(--teal); border-bottom: 4px solid var(--navy); clip-path: polygon(0 0, calc(100% - 20px) 0, 100% 20px, 100% 100%, 0 100%); transition: transform 0.2s ease-out, box-shadow 0.2s ease-out; box-shadow: 4px 4px 0 var(--navy); }}
+.card:hover {{ transform: translate(-3px, -3px); box-shadow: 7px 7px 0 var(--navy); }}
+.card-icon {{ font-size: 2rem; margin-bottom: 1rem; display: block; }}
+.card h3 {{ margin-bottom: 0.6rem; }}
+.card p {{ color: var(--gray-dark); font-size: 0.95rem; max-width: none; }}
+.values-grid {{ display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }}
+.value-item {{ text-align: center; padding: 28px 16px; background: var(--navy-dark); clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 0 100%); border-bottom: 3px solid var(--teal); }}
+.value-icon {{ font-size: 1.8rem; margin-bottom: 0.6rem; display: block; }}
+.value-item h3 {{ font-size: 0.88rem; margin-bottom: 0.4rem; color: var(--white); letter-spacing: 0.06em; }}
+.value-item p {{ font-size: 0.82rem; color: rgba(255,255,255,0.70); max-width: none; margin: 0; }}
+.two-col {{ display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }}
+.site-footer {{ background: var(--navy-dark); color: rgba(255,255,255,0.75); padding: 60px 24px 28px; position: relative; border-top: 4px solid var(--teal); }}
+.site-footer::before {{ content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: var(--amber); opacity: 0.4; }}
+.footer-inner {{ max-width: var(--max-width); margin: 0 auto; }}
+.footer-top {{ display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 48px; padding-bottom: 36px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 28px; }}
+.footer-brand-name {{ font-family: var(--font-display); font-size: 1.05rem; font-weight: 900; color: var(--white); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 0.75rem; }}
+.footer-tagline {{ font-size: 0.88rem; line-height: 1.6; max-width: 300px; margin-bottom: 0; }}
+.footer-col h4 {{ font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--teal-light); margin-bottom: 1rem; display: flex; align-items: center; gap: 6px; }}
+.footer-col h4::before {{ content: ''; display: inline-block; width: 12px; height: 2px; background: var(--teal-light); flex-shrink: 0; }}
+.footer-col ul {{ list-style: none; padding: 0; margin: 0; }}
+.footer-col li {{ margin-bottom: 0.55rem; }}
+.footer-col a {{ color: rgba(255,255,255,0.65); text-decoration: none; font-size: 0.88rem; transition: color 0.15s; }}
+.footer-col a:hover {{ color: var(--teal-light); }}
+.footer-bottom {{ display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.4); }}
+.text-center {{ text-align: center; }}
+.text-center p {{ margin-left: auto; margin-right: auto; }}
+@media (max-width: 900px) {{
+  .two-col {{ grid-template-columns: 1fr; gap: 40px; }}
+  .footer-top {{ grid-template-columns: 1fr 1fr; gap: 32px; }}
+}}
+@media (max-width: 768px) {{
+  :root {{ --section-pad: 60px 20px; }}
+  .hero {{ clip-path: polygon(0 0, 100% 0, 100% 94%, 0 100%); padding: 70px 20px 90px; }}
+  .hero-actions {{ flex-direction: column; align-items: flex-start; }}
+  .site-header {{ position: relative; top: 0; }}
+  .nav-links a {{ padding: 8px 10px; font-size: 0.65rem; }}
+  .card-grid {{ grid-template-columns: 1fr; }}
+  .values-grid {{ grid-template-columns: 1fr 1fr; }}
+  .footer-top {{ grid-template-columns: 1fr; }}
+  .band-teal, .band-navy {{ clip-path: polygon(0 4px, 100% 0, 100% 100%, 0 100%); }}
+}}
+@media (max-width: 480px) {{
+  .values-grid {{ grid-template-columns: 1fr; }}
+}}
 </style>
 </head>
 <body>
 
 <!-- DEMO BANNER -->
-<div style="background:#ECAA27;color:#111111;font-size:10px;font-weight:900;text-transform:uppercase;
-     letter-spacing:2px;text-align:center;padding:0 20px;position:fixed;top:0;left:0;right:0;
-     z-index:9999;height:38px;display:flex;align-items:center;justify-content:center;">
-  <span>DEMO PREVIEW &mdash; BUILT FOR {name} BY PROLES HHC &mdash; NOT A LIVE WEBSITE</span>
-  <a href="{RAILWAY_URL}/proposal/{n}" target="_blank"
-     style="position:absolute;right:20px;color:#8a0a0a;font-size:9px;font-weight:900;
-            letter-spacing:1px;text-transform:uppercase;">
-    VIEW PROPOSAL &rarr;
+<div class="demo-banner">
+  <span>Demo Preview — Built for {name} by Proles HHC — Not a live website</span>
+  <a href="{RAILWAY_URL_local}/proposal/{n}" target="_blank"
+     style="position:absolute;right:20px;font-size:0.6rem;letter-spacing:0.1em;">
+    View Proposal →
   </a>
 </div>
 
-<!-- STICKY NAV -->
-<nav style="background:#111111;border-bottom:2px solid #ECAA27;position:sticky;top:38px;z-index:998;
-     height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 60px;">
-  <div style="font-size:16px;font-weight:900;color:#ECAA27;
-       font-family:'Arial Black',Arial,sans-serif;letter-spacing:-0.5px;">{name}</div>
-  <div style="display:flex;align-items:center;gap:28px;">
-    <a href="#services" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
-       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Services</a>
-    <a href="#about" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
-       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">About</a>
-    <a href="#who-we-serve" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
-       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Who We Serve</a>
-    <a href="#careers" style="color:#f5f0e8;font-size:12px;font-weight:700;letter-spacing:1px;text-transform:uppercase;"
-       onmouseover="this.style.color='#ECAA27'" onmouseout="this.style.color='#f5f0e8'">Careers</a>
-    <a href="#contact"
-       style="background:#ECAA27;color:#111111;padding:9px 20px;font-size:12px;font-weight:900;
-              text-transform:uppercase;letter-spacing:2px;
-              clip-path:polygon(0 0,calc(100% - 6px) 0,100% 6px,100% 100%,6px 100%,0 calc(100% - 6px));">
-      Contact Us
+<!-- HEADER -->
+<header class="site-header" role="banner">
+  <nav class="nav-inner" aria-label="Main navigation">
+    <a href="#" class="nav-brand" aria-label="{name} Home">
+      <span class="nav-brand-name">{name}</span>
+      <span class="nav-brand-tag">Caring for Your Whole Life</span>
     </a>
-  </div>
-</nav>
+    <ul class="nav-links" id="main-nav" role="list">
+      <li><a href="#about">About Us</a></li>
+      <li><a href="#services">Services</a></li>
+      <li><a href="#who-we-serve">Who We Serve</a></li>
+      <li class="nav-cta"><a href="#contact">Contact Us</a></li>
+    </ul>
+  </nav>
+</header>
 
-<!-- HERO -->
-<section style="min-height:100vh;background:#111111;padding:120px 60px 180px;position:relative;
-     clip-path:polygon(0 0,100% 0,100% calc(100% - 60px),0 100%);overflow:hidden;">
-  <div style="position:absolute;top:0;right:10%;width:3px;height:100%;
-       background:linear-gradient(180deg,transparent,#8a0a0a,transparent);opacity:0.4;transform:skewX(-20deg);"></div>
-  <div style="position:absolute;top:0;right:15%;width:1px;height:100%;
-       background:linear-gradient(180deg,transparent,#ECAA27,transparent);opacity:0.2;transform:skewX(-20deg);"></div>
-  <div style="display:flex;align-items:center;justify-content:space-between;max-width:1200px;gap:60px;">
-    <div style="flex:1;max-width:680px;">
-      <div style="display:flex;align-items:center;gap:12px;margin-bottom:24px;">
-        <div style="width:4px;height:32px;background:#ECAA27;flex-shrink:0;"></div>
-        <span style="font-size:12px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;">// {name}</span>
-      </div>
-      <div style="font-size:12px;font-weight:900;color:#888888;text-transform:uppercase;
-           letter-spacing:3px;margin-bottom:20px;">{city}, Maryland &middot; {phrase_clean}</div>
-      <h1 style="font-size:68px;font-weight:900;color:#f5f0e8;line-height:1.0;margin-bottom:24px;
-           letter-spacing:-2px;font-family:'Arial Black',Arial,sans-serif;">{name}</h1>
-      <p style="font-size:19px;color:#888888;line-height:1.6;margin-bottom:40px;">
-        Caring for your whole life &mdash; professional {svc_type} services for Maryland families.
-      </p>
-      <div style="display:flex;gap:16px;flex-wrap:wrap;">
-        <a href="#contact"
-           style="background:#ECAA27;color:#111111;padding:16px 36px;font-size:12px;font-weight:900;
-                  text-transform:uppercase;letter-spacing:2px;display:inline-block;
-                  clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-                  font-family:'Arial Black',Arial,sans-serif;">
-          Request Services &rarr;
-        </a>
-        <a href="#services"
-           style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;padding:16px 36px;
-                  font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
-                  display:inline-block;font-family:'Arial Black',Arial,sans-serif;">
-          Learn More
-        </a>
+<main id="main">
+
+  <!-- HERO -->
+  <section class="hero" aria-labelledby="hero-heading">
+    <div class="hero-inner">
+      <p class="hero-eyebrow">{name} &middot; {city}, Maryland</p>
+      <h1 id="hero-heading">Support, Care, and <em>Hope</em><br>for {city}</h1>
+      <p class="hero-sub">{hero_sub}</p>
+      <div class="hero-actions">
+        <a href="#services" class="btn btn-primary">See Our Services</a>
+        <a href="#contact" class="btn btn-secondary">Get in Touch</a>
       </div>
     </div>
-    <div style="display:flex;flex-direction:column;gap:16px;min-width:220px;">
-      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:24px 28px;">
-        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">STATUS</div>
-        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">Maryland Licensed</div>
-        <div style="font-size:12px;color:#888888;margin-top:4px;">OHCQ Certified Provider</div>
-      </div>
-      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #8a0a0a;padding:24px 28px;">
-        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">LOCATION</div>
-        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">Serving {city}</div>
-        <div style="font-size:12px;color:#888888;margin-top:4px;">Maryland &amp; Surrounding Areas</div>
-      </div>
-      <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:24px 28px;">
-        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;margin-bottom:8px;">COMPLIANCE</div>
-        <div style="font-size:16px;font-weight:900;color:#f5f0e8;font-family:'Arial Black',Arial,sans-serif;">OHCQ Compliant</div>
-        <div style="font-size:12px;color:#888888;margin-top:4px;">State Regulated &amp; Inspected</div>
+  </section>
+
+  <!-- MISSION STRIP -->
+  <section class="band-teal text-center" aria-labelledby="mission-heading" id="about">
+    <div class="container">
+      <h2 id="mission-heading">Our Mission</h2>
+      <p>{mission_text}</p>
+    </div>
+  </section>
+
+  <!-- WHY CHOOSE US -->
+  <section class="band-light" aria-labelledby="why-heading">
+    <div class="container">
+      <span class="section-label">Why {name}</span>
+      <h2 id="why-heading">We Put People First</h2>
+      <p class="section-intro">Everything we do starts with the person we serve — their goals, their needs, and their potential.</p>
+      <div class="card-grid">
+        <div class="card">
+          <span class="card-icon" aria-hidden="true">\U0001f91d</span>
+          <h3>Person-Centered Care</h3>
+          <p>We build care plans around each individual — not a one-size-fits-all model. Your goals guide our work in {city}.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon" aria-hidden="true">\U0001f3e0</span>
+          <h3>Community-Based Support</h3>
+          <p>We help individuals stay connected to their communities, families, and daily lives in meaningful ways.</p>
+        </div>
+        <div class="card">
+          <span class="card-icon" aria-hidden="true">\U0001f512</span>
+          <h3>Safe &amp; Trusted</h3>
+          <p>Our team is trained, background-checked, and committed to the safety and well-being of everyone we serve.</p>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ACCENT BAR -->
-{accent_bar}
+  <!-- SERVICES -->
+  <section aria-labelledby="services-heading" id="services">
+    <div class="container">
+      <span class="section-label">What We Offer</span>
+      <h2 id="services-heading">Our Services</h2>
+      <p class="section-intro">We offer a range of support services designed to meet people where they are and help them grow.</p>
+      <div class="card-grid">{cards_html}</div>
+    </div>
+  </section>
 
-<!-- MISSION -->
-<section id="about" style="background:#1a1a1a;padding:80px 60px;">
-  <div style="max-width:1200px;">
-    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">OUR MISSION</div>
-    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
-         font-family:'Arial Black',Arial,sans-serif;">Care That Puts You First</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;">
+  <!-- WHO WE SERVE -->
+  <section class="band-light" aria-labelledby="serve-heading" id="who-we-serve">
+    <div class="container two-col">
       <div>
-        <p style="font-size:16px;color:#888888;line-height:1.8;margin-bottom:24px;">{mission_text}</p>
-        <p style="font-size:15px;color:#666666;line-height:1.8;">
-          We work closely with families, care coordinators, and Maryland&rsquo;s DDA and OHCQ systems to
-          ensure every client receives the highest standard of care &mdash; delivered with respect and dignity.
-        </p>
+        <span class="section-label">Who We Serve</span>
+        <h2 id="serve-heading">Care for Every Person,<br>at Every Stage</h2>
+        <p>We work with individuals across {city} and the surrounding Maryland area who need compassionate, professional care. We also support their families and caregivers.</p>
+        <p>No matter where you are in your journey, we are here to listen, plan, and support you.</p>
       </div>
-      <div style="background:#111111;border:1px solid #2a2a2a;border-left:4px solid #ECAA27;padding:36px;">
-        <div style="font-size:10px;font-weight:900;color:#ECAA27;letter-spacing:3px;text-transform:uppercase;
-             margin-bottom:20px;font-family:'Arial Black',Arial,sans-serif;">OUR PROMISE</div>
-        <blockquote style="font-size:22px;font-weight:900;color:#f5f0e8;line-height:1.4;margin-bottom:20px;
-             font-family:'Arial Black',Arial,sans-serif;">
-          &ldquo;Every person we serve deserves to live fully in their community.&rdquo;
-        </blockquote>
-        <div style="height:2px;background:linear-gradient(90deg,#8a0a0a,#ECAA27);margin-bottom:20px;"></div>
-        <div style="font-size:13px;color:#888888;">Licensed by Maryland OHCQ &middot; {city}, MD</div>
+      <div>
+        <div class="values-grid">{who_html}</div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ACCENT BAR -->
-{accent_bar}
-
-<!-- SERVICES -->
-<section id="services" style="background:#111111;padding:80px 60px;">
-  <div style="max-width:1200px;">
-    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHAT WE OFFER</div>
-    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
-         font-family:'Arial Black',Arial,sans-serif;">Our Services</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">{cards_html}</div>
-  </div>
-</section>
-
-<!-- WHY CHOOSE US -->
-<section style="background:#1a1a1a;padding:80px 60px;">
-  <div style="max-width:1200px;">
-    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHY {name_upper}</div>
-    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
-         font-family:'Arial Black',Arial,sans-serif;">Our Commitment to You</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:28px;">
-      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
-        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
-             font-family:'Arial Black',Arial,sans-serif;">01</div>
-        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
-             font-family:'Arial Black',Arial,sans-serif;">Licensed &amp; Certified</div>
-        <div style="font-size:14px;color:#888888;line-height:1.7;">
-          Maryland OHCQ licensed and fully compliant. Your family&rsquo;s safety and trust is our highest priority.
-        </div>
-      </div>
-      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
-        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
-             font-family:'Arial Black',Arial,sans-serif;">02</div>
-        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
-             font-family:'Arial Black',Arial,sans-serif;">Maryland Based</div>
-        <div style="font-size:14px;color:#888888;line-height:1.7;">
-          Rooted in the {city} community. We understand the unique needs of Maryland families and the resources available to them.
-        </div>
-      </div>
-      <div style="background:#111111;border:1px solid #2a2a2a;border-top:3px solid #ECAA27;padding:36px;">
-        <div style="font-size:40px;color:#ECAA27;margin-bottom:20px;font-weight:900;
-             font-family:'Arial Black',Arial,sans-serif;">03</div>
-        <div style="font-size:18px;font-weight:900;color:#f5f0e8;margin-bottom:14px;
-             font-family:'Arial Black',Arial,sans-serif;">Personalized Care</div>
-        <div style="font-size:14px;color:#888888;line-height:1.7;">
-          Every client receives an individualized care plan tailored to their specific needs, goals, and family situation.
-        </div>
-      </div>
+  <!-- CONTACT CTA -->
+  <section class="band-navy text-center" aria-labelledby="cta-heading" id="contact">
+    <div class="container">
+      <h2 id="cta-heading">Ready to Get Started?</h2>
+      <p>Contact us today. We will answer your questions and help you understand what services may be right for you or your loved one.</p>
+      <div style="margin-top:2rem;">{contact_items}</div>
+      <p style="font-size:0.88rem;color:rgba(255,255,255,0.5);margin-top:1.5rem;">{city}, Maryland &middot; Serving {city} and surrounding communities.</p>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- WHO WE SERVE -->
-<section id="who-we-serve" style="background:#111111;padding:80px 60px;">
-  <div style="max-width:1200px;">
-    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">WHO WE SERVE</div>
-    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:48px;
-         font-family:'Arial Black',Arial,sans-serif;">Serving Maryland Families</h2>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">{who_html}</div>
-  </div>
-</section>
-
-<!-- ACCENT BAR -->
-{accent_bar}
-
-<!-- CAREERS -->
-<section id="careers" style="background:#1a1a1a;padding:60px 60px;">
-  <div style="max-width:1200px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:32px;">
-    <div>
-      <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-           letter-spacing:3px;margin-bottom:12px;font-family:'Arial Black',Arial,sans-serif;">JOIN OUR TEAM</div>
-      <h2 style="font-size:32px;font-weight:900;color:#f5f0e8;margin-bottom:12px;
-           font-family:'Arial Black',Arial,sans-serif;">Careers at {name}</h2>
-      <p style="font-size:15px;color:#888888;max-width:500px;">
-        We are always looking for compassionate, dedicated care professionals to join our team in {city}, Maryland.
-      </p>
-    </div>
-    <a href="#contact"
-       style="background:transparent;border:2px solid #ECAA27;color:#ECAA27;padding:16px 36px;
-              font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:2px;
-              display:inline-block;font-family:'Arial Black',Arial,sans-serif;white-space:nowrap;">
-      View Openings &rarr;
-    </a>
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact" style="background:#111111;padding:80px 60px;border-left:4px solid #ECAA27;">
-  <div style="max-width:700px;">
-    <div style="font-size:11px;font-weight:900;color:#ECAA27;text-transform:uppercase;
-         letter-spacing:3px;margin-bottom:16px;font-family:'Arial Black',Arial,sans-serif;">GET IN TOUCH</div>
-    <h2 style="font-size:42px;font-weight:900;color:#f5f0e8;margin-bottom:16px;
-         font-family:'Arial Black',Arial,sans-serif;">Ready to Get Started?</h2>
-    <p style="font-size:16px;color:#888888;margin-bottom:8px;">{city}, Maryland</p>
-    {phone_html}
-    {email_html}
-    <a href="#"
-       style="display:inline-block;background:#ECAA27;color:#111111;padding:16px 40px;
-              font-size:13px;font-weight:900;text-transform:uppercase;letter-spacing:2px;margin-top:16px;
-              clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));
-              font-family:'Arial Black',Arial,sans-serif;">
-      Contact Us Today
-    </a>
-    <p style="font-size:13px;color:#555555;margin-top:24px;">Serving {city} and surrounding Maryland communities.</p>
-  </div>
-</section>
+</main>
 
 <!-- FOOTER -->
-<footer style="background:#0a0a0a;padding:30px 60px;display:flex;
-     justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;">
-  <span style="font-size:12px;color:#444444;">&copy; 2026 {name} &middot; Licensed by Maryland OHCQ</span>
-  <span style="font-size:12px;color:#444444;">Demo created by Proles HHC &middot; prolesconsulting.com</span>
+<footer class="site-footer" role="contentinfo">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand-name">{name}</div>
+        <p class="footer-tagline">Compassionate care and support for individuals and families in {city}, Maryland — helping people live fuller, more independent lives.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="#">Home</a></li>
+          <li><a href="#about">About Us</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#who-we-serve">Who We Serve</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Contact</h4>
+        <ul>
+          {footer_phone}
+          {footer_email}
+          <li style="color:rgba(255,255,255,0.65);font-size:0.88rem;">{city}, Maryland</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 {name}. All rights reserved.</span>
+      <span>Demo by Proles HHC &middot; prolesconsulting.com</span>
+    </div>
+  </div>
 </footer>
 
 </body>
 </html>"""
+
 
 
 # ── Routes ─────────────────────────────────────────────────────────────────────
