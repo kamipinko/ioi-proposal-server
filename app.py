@@ -996,6 +996,49 @@ def build_overview(agency, n):
 </html>"""
 
 
+def build_overview_for_pdf(agency, n):
+    html = build_overview(agency, n)
+
+    # Fix relative image URL — WeasyPrint with base_url=None can't resolve /static/...
+    html = html.replace('src="/static/logo.png"', f'src="{RAILWAY_URL}/static/logo.png"')
+
+    # Strip Google Fonts link tags (defensive)
+    html = re.sub(r'<link[^>]+fonts\.googleapis\.com[^>]*>', '', html)
+
+    # Strip @import Google Fonts from style blocks (defensive)
+    html = re.sub(r'@import\s+url\([^)]*fonts\.googleapis\.com[^)]*\)[^;]*;', '', html)
+
+    # Replace Google Font family references with system fonts (defensive)
+    for gfont, replacement in [
+        ('Playfair Display', 'Arial, sans-serif'),
+        ('Space Mono',       'Courier New, monospace'),
+        ('Share Tech Mono',  'Courier New, monospace'),
+    ]:
+        html = html.replace(f"'{gfont}'", replacement)
+        html = html.replace(f'"{gfont}"', replacement)
+
+    # Replace CSS variables with hardcoded values (defensive — overview uses none currently)
+    _OVERVIEW_VAR_MAP = [
+        ('var(--bg)',       '#111111'),
+        ('var(--gold)',     '#ECAA27'),
+        ('var(--red)',      '#8a0a0a'),
+        ('var(--red-dark)', '#5a0505'),
+        ('var(--text)',     '#f5f0e8'),
+        ('var(--muted)',    '#aaaaaa'),
+        ('var(--border)',   '#2a2a2a'),
+    ]
+    for var, val in _OVERVIEW_VAR_MAP:
+        html = html.replace(var, val)
+
+    # Remove print button block
+    html = re.sub(r'<div class="no-print">.*?</div>', '', html, flags=re.DOTALL)
+
+    # Remove script blocks
+    html = re.sub(r'<script\b[^>]*>.*?</script>', '', html, flags=re.DOTALL | re.IGNORECASE)
+
+    return html
+
+
 # ── Proposal HTML ─────────────────────────────────────────────────────────────
 
 def build_proposal(agency, n):
@@ -2010,7 +2053,7 @@ def generate_draft(row_num):
     try:
         from weasyprint import HTML, CSS
         print(f'[pdf] building overview HTML for {name}...')
-        overview_html = build_overview(agency, row_num)
+        overview_html = build_overview_for_pdf(agency, row_num)
         print(f'[pdf] HTML len={len(overview_html)}, calling WeasyPrint...')
         pdf_bytes = HTML(string=overview_html, base_url=None).write_pdf(
             stylesheets=[CSS(string='@page { size: Letter; margin: 0.4in 0.5in; }')]
